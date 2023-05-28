@@ -5,7 +5,7 @@ import json
 import cherrypy
 from colorama import Fore, Style
 from pymongo import MongoClient
-from ..utils.ErrorHandler import DatabaseError, BrokerError
+from utils.ErrorHandler import DatabaseError, BrokerError
 
 class MongoDB:	
         
@@ -100,51 +100,62 @@ class MongoDB:
 
             # Pressure
             if _sens_cat=="pressure":
-
-                for resource in msg_body['e']:
                 
-                    # Pressure Measurement Microservice
-                    if _sens_type=="measurements":
+                # Pressure Measurement Microservice
+                if _sens_type=="measurements":
 
-                        doc = {"timestamp":msg_body['bt'],
-                                "user_id": _id,
-                                "sens_cat": _sens_cat,
-                                "sens_type": _sens_type,
-                                "unit": resource['u'],
-                                "diastolic":  next((e for e in msg_body['e'] if e.get("n")=="diastolic"), None)['v'],
-                                "systolic": next((e for e in msg_body['e'] if e.get("n")=="systolic"), None)['v']}
-
-                    elif _sens_type=="reports":
-
-                        doc = {"timestamp":msg_body['bt'],
+                    doc = {"timestamp":msg_body['bt'],
                             "user_id": _id,
                             "sens_cat": _sens_cat,
                             "sens_type": _sens_type,
                             "unit": msg_body['u'],
-                            "max_diastolic": next((e for e in msg_body['e'] if e.get("n")=="max_diastolic"), None)['v'],
-                            "min_diastolic": next((e for e in msg_body['e'] if e.get("n")=="min_diastolic"), None)['v'],
-                            "mean_diastolic": next((e for e in msg_body['e'] if e.get("n")=="mean_diastolic"), None)['v'],
-                            "max_systolic": next((e for e in msg_body['e'] if e.get("n")=="max_systolic"), None)['v'],
-                            "min_systolic": next((e for e in msg_body['e'] if e.get("n")=="min_systolic"), None)['v'],
-                            "mean_systolic": next((e for e in msg_body['e'] if e.get("n")=="mean_systolic"), None)['v']}
-                    
-                    elif _sens_type=="warnings":
+                            "diastolic":  next((e for e in msg_body['e'] if e.get("n")=="diastolic"), None)['v'],
+                            "systolic": next((e for e in msg_body['e'] if e.get("n")=="systolic"), None)['v']}
 
-                        doc = {"timestamp":msg_body['bt'],
-                           "user_id": _id,
-                           "sens_cat": _sens_cat,
-                           "sens_type": _sens_type,
-                           "unit": msg_body['u'],
-                           "warning": msg_body['e'][0]['n'],
-                           "value": msg_body['e'][0]['v']}
+                elif _sens_type=="reports":
+
+                    doc = {"timestamp":msg_body['bt'],
+                        "user_id": _id,
+                        "sens_cat": _sens_cat,
+                        "sens_type": _sens_type,
+                        "unit": msg_body['u'],
+                        "max_diastolic": next((e for e in msg_body['e'] if e.get("n")=="max_diastolic"), None)['v'],
+                        "min_diastolic": next((e for e in msg_body['e'] if e.get("n")=="min_diastolic"), None)['v'],
+                        "mean_diastolic": next((e for e in msg_body['e'] if e.get("n")=="mean_diastolic"), None)['v'],
+                        "max_systolic": next((e for e in msg_body['e'] if e.get("n")=="max_systolic"), None)['v'],
+                        "min_systolic": next((e for e in msg_body['e'] if e.get("n")=="min_systolic"), None)['v'],
+                        "mean_systolic": next((e for e in msg_body['e'] if e.get("n")=="mean_systolic"), None)['v']}
+                
+                elif _sens_type=="warnings":
+
+                    doc = {"timestamp":msg_body['bt'],
+                        "user_id": _id,
+                        "sens_cat": _sens_cat,
+                        "sens_type": _sens_type,
+                        "unit": msg_body['u'],
+                        "warning": msg_body['e'][0]['n'],
+                        "value": msg_body['e'][0]['v']}
+                        
+            elif _sens_cat=="oxygen":
+                
+                # Oxygen Saturation Measurement Microservice
+                if _sens_type=="measurements":
+
+                    doc = {"timestamp":msg_body['bt'],
+                            "user_id": _id,
+                            "sens_cat": _sens_cat,
+                            "sens_type": _sens_type,
+                            "unit": msg_body['u'],
+                            "spo2":  next((e for e in msg_body['e'] if e.get("n")=="SpO2"), None)['v']
+                            }
             
-                # Insert Measurements in Database
-                result = self.db[_sens_type].insert_one(doc)
+            # Insert Measurements in Database
+            result = self.db[_sens_type].insert_one(doc)
 
-                if result.acknowledged:
-                    print(f"{Fore.CYAN}[INS] Successfully Inserted Document in Database{Fore.RESET}")
-                else:
-                    print(f"{Fore.RED}[INS] Failed to Insert Document in Database{Fore.RESET}")
+            if result.acknowledged:
+                print(f"{Fore.CYAN}[INS] Successfully Inserted Document in Database{Fore.RESET}")
+            else:
+                print(f"{Fore.RED}[INS] Failed to Insert Document in Database{Fore.RESET}")
 
 
 if __name__ == "__main__":

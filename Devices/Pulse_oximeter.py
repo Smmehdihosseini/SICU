@@ -5,23 +5,25 @@ import json
 from colorama import Fore, Style
 from utils.ErrorHandler import DatabaseError, BrokerError
 
-class Sphygmomanometer:
+class Pulse_Oximeter:
 
     def __init__(self,
                  user_id,
-                 topic_cat="pressure",
+                 topic_cat="oxygen",
                  topic_measurement="measurements",
-                 systolic_threshold=90,
-                 diastolic_threshold=60,
+                 sat_threshold=90,
                  prob=0.9,
-                 sample_freq=5,
+                 sample_freq=1,
                  qos=2,
                  msg_broker="localhost",
                  msg_broker_port=1883):
             
+        
+
         self.user_id = user_id
 
-        self.clientID = str(self.user_id+"-SPD")        
+        self.clientID = str(self.user_id+"-POD")
+        
         # Instance of PahoMQTT Client
         self.paho_mqtt = PahoMQTT.Client(self.clientID, True) 
         
@@ -41,29 +43,28 @@ class Sphygmomanometer:
 
         # Measurement Value
 
-        self.ss_threshold = systolic_threshold
-        self.ds_threshold = diastolic_threshold
+        self.sat_threshold = sat_threshold
         self.prob = prob
         self.sample_freq = sample_freq
 
     def start(self):
-            
+
         try: 
-            # Connect  MQTT Broker Connection
+            # MQTT Broker Connection
             self.paho_mqtt.connect(self.msg_broker, self.msg_broker_port)
             self.paho_mqtt.loop_start()
 
         except:
             raise BrokerError("Error Occured with Connecting MQTT Broker")
         
-        print(f"{Fore.YELLOW}\n+ Sphygmomanometer Sensor: [ONLINE] ...\n----------------------------------------------------------------------------------{Fore.RESET}")
+        print(f"{Fore.YELLOW}\n+ Pulse Oximeter Sensor: [ONLINE] ...\n----------------------------------------------------------------------------------{Fore.RESET}")
 
     def stop(self):
-            
+
         self.paho_mqtt.loop_stop()
         self.paho_mqtt.disconnect()
 
-        print("----------------------------------------------------------------------------------\n+ Sphygmomanometer Sensor: [OFFLINE]")
+        print("----------------------------------------------------------------------------------\n+ Pulse Oximeter Sensor: [OFFLINE]")
 
     def publish_measurements(self, msg):
 
@@ -74,7 +75,7 @@ class Sphygmomanometer:
         msg_form = {
                     "bn":f"{self.msg_broker}:{self.msg_broker_port}/{self.user_id}/{self.topic_cat}/{self.topic_measurement}",
                     "bt":timestamp,
-                    "u":"mmHg",
+                    "u":"%",
                     "e": msg
                     }
         
@@ -89,55 +90,36 @@ class Sphygmomanometer:
     def get_measurements(self):
 
         if random.random() < self.prob:
-            ss = random.randint(self.ss_threshold, 140)
-
+            oxygen_saturation = random.randint(self.sat_threshold, 100)
         else:
-
-            if random.random()>=0.5:
-                ss = random.randint(50, self.ss_threshold-1)
-
-            else:
-                ss = random.randint(141, 150)
-        
-        if random.random() < self.prob:
-            ds = random.randint(self.ds_threshold, 90)
-
-        else:
-
-            if random.random()>=0.5:
-                ds = random.randint(50, self.ds_threshold-1)
-            else:
-                ds = random.randint(91, 100)
+            oxygen_saturation = random.randint(70, self.sat_threshold-1)
 
         measurement = [
-                        {"n":"systolic", "v":ss},
-                        {"n":"diastolic", "v":ds}
-                      ]       
+                        {"n":"SpO2", "v":oxygen_saturation}
+                      ] 
         
         return measurement
     
     def sleep(self):
         return self.sample_freq
-
-
+    
 if __name__ == "__main__":
 
-    sphy_dev = Sphygmomanometer(user_id="P300",
-                 topic_cat="pressure",
-                 topic_measurement="measurements",
-                 systolic_threshold=90,
-                 diastolic_threshold=60,
-                 prob=0.9,
-                 sample_freq=5,
-                 qos=2,
-                 msg_broker="localhost",
-                 msg_broker_port=1883)
+    pulse_ox = Pulse_Oximeter(user_id="P300",
+                            topic_cat="oxygen",
+                            topic_measurement="measurements",
+                            sat_threshold=90,
+                            prob=0.9,
+                            sample_freq=1,
+                            qos=2,
+                            msg_broker="localhost",
+                            msg_broker_port=1883)
 
-    sphy_dev.start()
+    pulse_ox.start()
 
     while True:
-        measurement = sphy_dev.get_measurements()
-        sphy_dev.publish_measurements(measurement)
-        time.sleep(sphy_dev.sleep())
+        measurement = pulse_ox.get_measurements()
+        pulse_ox.publish_measurements(measurement)
+        time.sleep(pulse_ox.sleep())
 
-    sphy_dev.stop()
+    pulse_ox.stop()
