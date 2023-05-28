@@ -3,9 +3,9 @@ import time
 import random
 import json
 from colorama import Fore, Style
-from utils.ErrorHandler import DatabaseError, BrokerError
+from utils.ErrorHandler import BrokerError
 
-class Pulse_Oximeter:
+class Oximeter:
 
     def __init__(self,
                  user_id,
@@ -81,7 +81,7 @@ class Pulse_Oximeter:
         
         self.paho_mqtt.publish(f"{self.user_id}/{self.topic_cat}/{self.topic_measurement}", json.dumps(msg_form), 2)
 
-        print(f"{Fore.GREEN}{Style.BRIGHT}[PUB]{Style.NORMAL} - Message Sent:{Fore.RESET}{msg_form}")
+        print(f"{Fore.GREEN}{Style.BRIGHT}[PUB]{Style.NORMAL} - Measurement Sent:{Fore.RESET}{msg_form}")
 
     def on_connect(self, paho_mqtt, userdata, flags, rc):
 
@@ -105,7 +105,7 @@ class Pulse_Oximeter:
     
 if __name__ == "__main__":
 
-    pulse_ox = Pulse_Oximeter(user_id="P300",
+    pulse_ox = Oximeter(user_id="P300",
                             topic_cat="oxygen",
                             topic_measurement="measurements",
                             sat_threshold=90,
