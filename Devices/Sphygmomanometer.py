@@ -80,7 +80,7 @@ class Sphygmomanometer:
         
         self.paho_mqtt.publish(f"{self.user_id}/{self.topic_cat}/{self.topic_measurement}", json.dumps(msg_form), 2)
 
-        print(f"{Fore.GREEN}{Style.BRIGHT}[PUB]{Style.NORMAL} - Message Sent:{Fore.RESET}{msg_form}")
+        print(f"{Fore.GREEN}{Style.BRIGHT}[PUB]{Style.NORMAL} - Measurement Sent:{Fore.RESET}{msg_form}")
 
     def on_connect(self, paho_mqtt, userdata, flags, rc):
 

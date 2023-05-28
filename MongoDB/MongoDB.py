@@ -96,7 +96,7 @@ class MongoDB:
             _id, _sens_cat, _sens_type = msg.topic.split('/')
             msg_body = json.loads(msg.payload.decode('utf-8'))
 
-            print (f"{Fore.GREEN}{Style.BRIGHT}[SUB]{Style.NORMAL} Message Recieved [{msg_body['bt']}]: Topic: '{msg.topic}' - QoS: '{str(msg.qos)}' - Message: {Fore.RESET}'{str(msg_body)}")
+            print (f"{Fore.GREEN}{Style.BRIGHT}[SUB]{Style.NORMAL} {str(_sens_type).capitalize()} Recieved [{msg_body['bt']}]: Topic: '{msg.topic}' - QoS: '{str(msg.qos)}' - Message: {Fore.RESET}'{str(msg_body)}")
 
             # Pressure
             if _sens_cat=="pressure":
@@ -115,7 +115,7 @@ class MongoDB:
                 elif _sens_type=="reports":
 
                     doc = {"timestamp":msg_body['bt'],
-                        "user_id": _id,
+                        "user_id": msg_body['id'],
                         "sens_cat": _sens_cat,
                         "sens_type": _sens_type,
                         "unit": msg_body['u'],
@@ -129,7 +129,7 @@ class MongoDB:
                 elif _sens_type=="warnings":
 
                     doc = {"timestamp":msg_body['bt'],
-                        "user_id": _id,
+                        "user_id": msg_body['id'],
                         "sens_cat": _sens_cat,
                         "sens_type": _sens_type,
                         "unit": msg_body['u'],

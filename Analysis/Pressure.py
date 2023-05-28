@@ -6,8 +6,6 @@ import cherrypy
 from colorama import Fore, Style
 from utils.ErrorHandler import BrokerError
 
-
-
 class Blood_Pressure_Analysis:
         
         exposed = True
@@ -15,7 +13,7 @@ class Blood_Pressure_Analysis:
         def __init__(self,
                  client_id,
                  topic_cat="pressure",
-                  topic_measurement='measurements',
+                 topic_measurement='measurements',
                  topic_report="reports",
                  topic_warning="warnings",
                  systolic_desc_bound={"lower_bound":90, "upper_bound":140},
