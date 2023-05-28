@@ -148,7 +148,20 @@ class MongoDB:
                             "unit": msg_body['u'],
                             "spo2":  next((e for e in msg_body['e'] if e.get("n")=="SpO2"), None)['v']
                             }
-            
+                    
+            elif _sens_cat=="ecg":
+                
+                # ECG Measurement Microservice
+                if _sens_type=="measurements":
+
+                    doc = {"timestamp":msg_body['bt'],
+                            "user_id": _id,
+                            "sens_cat": _sens_cat,
+                            "sens_type": _sens_type,
+                            "unit": msg_body['u'],
+                            "ecg_seg":  msg_body['e']
+                            }
+
             # Insert Measurements in Database
             result = self.db[_sens_type].insert_one(doc)
 
