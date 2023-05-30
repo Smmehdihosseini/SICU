@@ -18,8 +18,6 @@ class Oximeter:
                  msg_broker="localhost",
                  msg_broker_port=1883):
             
-        
-
         self.user_id = user_id
 
         self.clientID = str(self.user_id+"-POD")
