@@ -85,7 +85,9 @@ class Electrocardiogram:
                     "bn":f"{self.msg_broker}:{self.msg_broker_port}/{self.user_id}/{self.topic_cat}/{self.topic_measurement}",
                     "bt":timestamp,
                     "u":"mm",
-                    "e": msg.tolist()
+                    "e": [
+                          {"n":"ECG Segment", "v":msg.tolist()}
+                        ]
                     }
         
         self.paho_mqtt.publish(f"{self.user_id}/{self.topic_cat}/{self.topic_measurement}", json.dumps(msg_form), 2)
@@ -106,7 +108,7 @@ class Electrocardiogram:
             else:
                 heart_rate = random.randint(self.tachycardia_threshold-1, self.tachycardia_threshold+20)
         
-        # signal generation
+        # Generate ECG Signal
         ecg_sec = nk.ecg_simulate(duration=self.duration, sampling_rate=self.sampling_rate, heart_rate=heart_rate) 
 
         return ecg_sec
@@ -135,8 +137,6 @@ if __name__ == "__main__":
         measurement = ECG.get_measurements()
         while i < 60:
             ECG.publish_measurements(measurement[i*ECG.sampling_rate:(i+1)*ECG.sampling_rate])
-            print(i)
             time.sleep(ECG.sleep())
-            i += 1
 
         ECG.stop()
