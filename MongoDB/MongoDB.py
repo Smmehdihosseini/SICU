@@ -92,7 +92,7 @@ class MongoDB:
         def on_message(self, paho_mqtt , userdata, msg):
 
             # On Getting New Message
-
+            # 'P300/oxygen/measurements
             _id, _sens_cat, _sens_type = msg.topic.split('/')
             msg_body = json.loads(msg.payload.decode('utf-8'))
 
@@ -149,6 +149,28 @@ class MongoDB:
                             "spo2":  next((e for e in msg_body['e'] if e.get("n")=="SpO2"), None)['v']
                             }
                     
+                elif _sens_type=="reports":
+
+                    doc = {"timestamp":msg_body['bt'],
+                        "user_id": msg_body['id'],
+                        "sens_cat": _sens_cat,
+                        "sens_type": _sens_type,
+                        "unit": msg_body['u'],
+                        "max_spo2": next((e for e in msg_body['e'] if e.get("n")=="max_spo2"), None)['v'],
+                        "min_spo2": next((e for e in msg_body['e'] if e.get("n")=="min_spo2"), None)['v'],
+                        "mean_spo2": next((e for e in msg_body['e'] if e.get("n")=="mean_spo2"), None)['v']}
+                
+                elif _sens_type=="warnings":
+
+                    doc = {"timestamp":msg_body['bt'],
+                        "user_id": msg_body['id'],
+                        "sens_cat": _sens_cat,
+                        "sens_type": _sens_type,
+                        "unit": msg_body['u'],
+                        "warning": msg_body['e'][0]['n'],
+                        "value": msg_body['e'][0]['v']}
+                    
+
             elif _sens_cat=="ecg":
                 
                 # ECG Measurement Microservice
@@ -159,8 +181,34 @@ class MongoDB:
                             "sens_cat": _sens_cat,
                             "sens_type": _sens_type,
                             "unit": msg_body['u'],
-                            "ecg_seg":  msg_body['e']
+                            "ecg_seg":  next((e for e in msg_body['e'] if e.get("n")=="ECG Segment"), None)['v']
                             }
+                    
+                elif _sens_type=="reports":
+
+                    doc = {"timestamp":msg_body['bt'],
+                        "user_id": msg_body['id'],
+                        "sens_cat": _sens_cat,
+                        "sens_type": _sens_type,
+                        "unit": msg_body['u'],
+                        "mean_freq": next((e for e in msg_body['e'] if e.get("n")=="mean_freq"), None)['v'],
+                        "min_freq": next((e for e in msg_body['e'] if e.get("n")=="min_freq"), None)['v'],
+                        "max_freq": next((e for e in msg_body['e'] if e.get("n")=="max_freq"), None)['v'],
+                        "mean_rr": next((e for e in msg_body['e'] if e.get("n")=="mean_rr"), None)['v'],
+                        "min_rr": next((e for e in msg_body['e'] if e.get("n")=="min_rr"), None)['v'],
+                        "max_rr": next((e for e in msg_body['e'] if e.get("n")=="max_rr"), None)['v'],
+                        "std_rr": next((e for e in msg_body['e'] if e.get("n")=="std_rr"), None)['v']
+                        }
+                
+                elif _sens_type=="warnings":
+
+                    doc = {"timestamp":msg_body['bt'],
+                        "user_id": msg_body['id'],
+                        "sens_cat": _sens_cat,
+                        "sens_type": _sens_type,
+                        "unit": msg_body['u'],
+                        "warning": msg_body['e'][0]['n'],
+                        "value": msg_body['e'][0]['v']}
 
             # Insert Measurements in Database
             result = self.db[_sens_type].insert_one(doc)
@@ -173,7 +221,7 @@ class MongoDB:
 
 if __name__ == "__main__":
 
-    mongo_db = MongoDB(clientID="Admin",
+    mongo_db = MongoDB(clientID="MongoDB",
                       mongo_url="localhost",
                       mongo_port=27017,
                       msg_broker='localhost',
