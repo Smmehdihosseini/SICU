@@ -5,6 +5,8 @@ import numpy as np
 import neurokit2 as nk
 import json 
 import random
+import gzip
+import base64
 from colorama import Fore, Style
 from utils.ErrorHandler import DatabaseError, BrokerError
 
@@ -14,7 +16,7 @@ class Electrocardiogram:
                  user_id,
                  topic_cat="ecg",
                  topic_measurement="measurements",
-                 sampling_rate=90,
+                 sampling_rate=1000,
                  duration=60,
                  tachycardia_threshold=100,
                  bradycardia_threshold=60,
@@ -90,7 +92,7 @@ class Electrocardiogram:
                         ]
                     }
         
-        self.paho_mqtt.publish(f"{self.user_id}/{self.topic_cat}/{self.topic_measurement}", json.dumps(msg_form), 2)
+        self.paho_mqtt.publish(f"{self.user_id}/{self.topic_cat}/{self.topic_measurement}", json.dumps(msg_form), self.QoS)
 
         print(f"{Fore.GREEN}{Style.BRIGHT}[PUB]{Style.NORMAL} - Measurement Sent:{Fore.RESET}{msg_form}")
 
@@ -121,7 +123,7 @@ if __name__ == "__main__":
     ECG = Electrocardiogram(user_id="P300",
                             topic_cat="ecg",
                             topic_measurement="measurements",
-                            sampling_rate=90,
+                            sampling_rate=1000,
                             duration=60,
                             tachycardia_threshold=100,
                             bradycardia_threshold=60,
@@ -138,5 +140,6 @@ if __name__ == "__main__":
         while i < 60:
             ECG.publish_measurements(measurement[i*ECG.sampling_rate:(i+1)*ECG.sampling_rate])
             time.sleep(ECG.sleep())
+            i += 1
 
         ECG.stop()

@@ -59,7 +59,7 @@ class Oxygen_Analysis:
                 # Connect MQTT Broker Connection
                 self.paho_mqtt.connect(self.msg_broker, self.msg_broker_port)
                 self.paho_mqtt.loop_start()
-                self.paho_mqtt.subscribe(f"+/{self.topic_cat}/{self.topic_measurement}")
+                self.paho_mqtt.subscribe(f"+/{self.topic_cat}/{self.topic_measurement}", self.QoS)
 
             except:
                 raise BrokerError("Error Occured with Connecting MQTT Broker")

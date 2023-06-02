@@ -66,7 +66,7 @@ class ECG_Analysis:
                 # Connect MQTT Broker Connection
                 self.paho_mqtt.connect(self.msg_broker, self.msg_broker_port)
                 self.paho_mqtt.loop_start()
-                self.paho_mqtt.subscribe(f"+/{self.topic_cat}/{self.topic_measurement}")
+                self.paho_mqtt.subscribe(f"+/{self.topic_cat}/{self.topic_measurement}", self.QoS)
 
             except:
                 raise BrokerError("Error Occured with Connecting MQTT Broker")
@@ -97,13 +97,50 @@ class ECG_Analysis:
             ecg_segment = next((e for e in msg_body['e'] if e.get("n")=="ECG Segment"), None)['v']
 
             # Array of ECG in Defined Window Size
-            self.ecg_data = np.append(self.ecg_data,
-                                     ecg_segment)
+            self.ecg_data = np.append(self.ecg_data, ecg_segment)
+
+        def publish_warnings(self, msg):
+                        
+            timestamp = int(time.time())
+
+            # Message Publish SenML Format
+            msg_form = {
+                        "bn":f"{self.msg_broker}:{self.msg_broker_port}/{self.user_id}/{self.topic_cat}/{self.topic_warning}",
+                        "id":self.user_id,
+                        "bt":timestamp,
+                        "u":"Hz",
+                        "e": msg
+                        }
             
+            self.paho_mqtt.publish(f"{self.user_id}/{self.topic_cat}/{self.topic_warning}", json.dumps(msg_form), self.QoS)
+
+            print(f"{Fore.LIGHTYELLOW_EX}{Style.BRIGHT}[PUB]{Style.NORMAL} - Warning Sent:{Fore.RESET}{msg_form}")	
+
+        def publish_report(self, msg):
+
+            timestamp = int(time.time())
+
+            # Message Publish SenML Format
+            msg_form = {
+                        "bn":f"{self.msg_broker}:{self.msg_broker_port}/{self.user_id}/{self.topic_cat}/{self.topic_report}",
+                        "id":self.user_id,
+                        "bt":timestamp,
+                        "u":"Hz",
+                        "e": msg
+                        }
+            
+            self.paho_mqtt.publish(f"{self.user_id}/{self.topic_cat}/{self.topic_report}", json.dumps(msg_form), self.QoS)
+
+            print(f"{Fore.BLUE}{Style.BRIGHT}[PUB]{Style.NORMAL} - Report Sent: {Fore.RESET}{msg_form}")
+                
+        def gen_report(self):
+
+            # Generate Reports with Certain Amount of Data - Prev Version Caused 'list index out of range'
+
             if len(self.ecg_data)!=0:
 
                 # Process ECG Data
-                processed_ecg = nk.ecg_process(self.ecg_data, sampling_rate=self.sampling_rate)
+                processed_ecg = nk.ecg_process(np.array(self.ecg_data), sampling_rate=self.sampling_rate)
 
                 # Heart Rate Analysis
                 self.heartrate_mean = round(np.mean(processed_ecg[0]['ECG_Rate']), 2)
@@ -175,45 +212,6 @@ class ECG_Analysis:
                             ]
                     
                     self.publish_warnings(warn_msg)
-
-        def publish_warnings(self, msg):
-                        
-            timestamp = int(time.time())
-
-            # Message Publish SenML Format
-            msg_form = {
-                        "bn":f"{self.msg_broker}:{self.msg_broker_port}/{self.user_id}/{self.topic_cat}/{self.topic_warning}",
-                        "id":self.user_id,
-                        "bt":timestamp,
-                        "u":"Hz",
-                        "e": msg
-                        }
-            
-            self.paho_mqtt.publish(f"{self.user_id}/{self.topic_cat}/{self.topic_warning}", json.dumps(msg_form), self.QoS)
-
-            print(f"{Fore.LIGHTYELLOW_EX}{Style.BRIGHT}[PUB]{Style.NORMAL} - Warning Sent:{Fore.RESET}{msg_form}")	
-
-        def publish_report(self, msg):
-
-            timestamp = int(time.time())
-
-            # Message Publish SenML Format
-            msg_form = {
-                        "bn":f"{self.msg_broker}:{self.msg_broker_port}/{self.user_id}/{self.topic_cat}/{self.topic_report}",
-                        "id":self.user_id,
-                        "bt":timestamp,
-                        "u":"Hz",
-                        "e": msg
-                        }
-            
-            self.paho_mqtt.publish(f"{self.user_id}/{self.topic_cat}/{self.topic_report}", json.dumps(msg_form), self.QoS)
-
-            print(f"{Fore.BLUE}{Style.BRIGHT}[PUB]{Style.NORMAL} - Report Sent: {Fore.RESET}{msg_form}")
-                
-        def gen_report(self):
-
-            # Generate Reports with Certain Amount of Data - Prev Version Caused 'list index out of range'
-            if len(self.ecg_data)!=0:
 
                 rep_msg = [
                            {"n":'mean_freq', "v":self.heartrate_mean}, 
