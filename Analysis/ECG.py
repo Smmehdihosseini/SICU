@@ -171,7 +171,7 @@ class ECG_Analysis:
                                      "min_rr":self.R_R_min,
                                      "max_rr":self.R_R_max,
                                      "std_rr":self.R_R_std,
-                                     "envelope":processed_ecg[0]["ECG_Clean"],
+                                     "envelope":processed_ecg[0]["ECG_Clean"].tolist(),
                                 }}
                             ]
                     
@@ -189,7 +189,7 @@ class ECG_Analysis:
                                      "min_rr":self.R_R_min,
                                      "max_rr":self.R_R_max,
                                      "std_rr":self.R_R_std,
-                                     "envelope":processed_ecg[0]["ECG_Clean"],
+                                     "envelope":processed_ecg[0]["ECG_Clean"].tolist(),
                                 }}
                             ]
                     

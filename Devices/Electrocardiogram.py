@@ -134,6 +134,7 @@ if __name__ == "__main__":
 
     ECG.start()
 
+    i = 0
     while True:
         i = 0
         measurement = ECG.get_measurements()
@@ -142,4 +143,4 @@ if __name__ == "__main__":
             time.sleep(ECG.sleep())
             i += 1
 
-        ECG.stop()
+    ECG.stop()
