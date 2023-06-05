@@ -43,13 +43,13 @@ class TelegramBot:
             self.users[chat_id] = {}
 
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="🟢↪️ Sign-in", callback_data="/signin"),
-                 InlineKeyboardButton(text="🆕 Sign-up", callback_data="/signup"),
-                 InlineKeyboardButton(text="❓ Help", callback_data="/help"), 
-                 InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")]
+                [InlineKeyboardButton(text="🟢↪️ Sign-in", callback_data="/signin")],
+                 [InlineKeyboardButton(text="🆕 Sign-up", callback_data="/signup")],
+                 [InlineKeyboardButton(text="❓ Help", callback_data="/help")], 
+                 [InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")]
             ])
 
-            self.bot.sendMessage(chat_id, '<b>Welcome to SICU Telegrambot! How can I Help You?</b>', reply_markup=keyboard)
+            self.bot.sendMessage(chat_id, '<b>Welcome to SICU Telegrambot! How can I Help You?</b>', parse_mode='HTML', reply_markup=keyboard)
 
         if command=='/signin':
             self.last_command = '/signin'
@@ -88,20 +88,20 @@ class TelegramBot:
                     message = "<b>📟 List of Registered Devices:</b>\n\n"
                     message += '\n'.join(f"▪️ <b>{device}</b>" for device in self.users[chat_id]['devices'])
                     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                        [InlineKeyboardButton(text="➕ Add New Device", callback_data="/add_device"),
-                         InlineKeyboardButton(text="❓ Help", callback_data="/help"),
-                         InlineKeyboardButton(text="⚜️ About Us", callback_data="/about"),
-                         InlineKeyboardButton(text="🔴↩️Sign-out", callback_data="/signout")]
+                        [InlineKeyboardButton(text="➕ Add New Device", callback_data="/add_device")],
+                         [InlineKeyboardButton(text="❓ Help", callback_data="/help")],
+                        [InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")],
+                         [InlineKeyboardButton(text="🔴↩️Sign-out", callback_data="/signout")]
                     ])
                     self.bot.sendMessage(chat_id, message, parse_mode='HTML', reply_markup=keyboard)
                 
                 else:
                     message = "<b>⚠️ [WARNING] No Devices Found! Do You Want to Add a New Device?</b>"
                     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                        [InlineKeyboardButton(text="➕ Yes, Add Device", callback_data="/add_device"),
-                         InlineKeyboardButton(text="❓ Help", callback_data="/help"),
-                         InlineKeyboardButton(text="⚜️ About Us", callback_data="/about"),
-                         InlineKeyboardButton(text="🔴↩️ Sign-out", callback_data="/signout")]
+                        [InlineKeyboardButton(text="➕ Yes, Add Device", callback_data="/add_device")],
+                         [InlineKeyboardButton(text="❓ Help", callback_data="/help")],
+                         [InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")],
+                         [InlineKeyboardButton(text="🔴↩️ Sign-out", callback_data="/signout")]
                     ])
                     self.bot.sendMessage(chat_id, message, parse_mode='HTML', reply_markup=keyboard)
 
@@ -119,10 +119,10 @@ class TelegramBot:
             self.users[chat_id] = {}
             message = "<b>🔴↩️ You're Signed-Out!</b>"
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="🟢↪️ Sign-in", callback_data="/signin"),
-                 InlineKeyboardButton(text="🆕 Sign-up", callback_data="/signup"),
-                 InlineKeyboardButton(text="❓ Help", callback_data="/help"), 
-                 InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")]
+                [InlineKeyboardButton(text="🟢↪️ Sign-in", callback_data="/signin")],
+                 [InlineKeyboardButton(text="🆕 Sign-up", callback_data="/signup")],
+                 [InlineKeyboardButton(text="❓ Help", callback_data="/help")], 
+                 [InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")]
             ])
             self.bot.sendMessage(chat_id, message, parse_mode='HTML', reply_markup=keyboard)
 
@@ -165,9 +165,9 @@ class TelegramBot:
                 message += f"▪️ <b>Organization:</b> <i>{self.temp_users[chat_id]['organization']}</i>\n\n"
                 message += f"❗️<b>Note:</b> <i>DO NOT SHARE THIS CREDENTIALS WITH ANYONE</i>\n"
                 keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                        [InlineKeyboardButton(text="🟢↪️ Sign-in", callback_data="/add_device"),
-                         InlineKeyboardButton(text="❓ Help", callback_data="/help"),
-                         InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")]
+                        [InlineKeyboardButton(text="🟢↪️ Sign-in", callback_data="/add_device")],
+                         [InlineKeyboardButton(text="❓ Help", callback_data="/help")],
+                         [InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")]
                     ])
                 self.bot.sendMessage(chat_id, message, parse_mode='HTML', reply_markup=keyboard)
                 self.temp_users[chat_id] = {}
@@ -193,10 +193,10 @@ class TelegramBot:
             self.last_command = None
             message = "<b>❌ [Error] Please First Sign-in or Sign-up to Add Device</b>"
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="🟢↪️ Sign-in", callback_data="/signin"),
-                 InlineKeyboardButton(text="🆕 Sign-up", callback_data="/signup"),
-                 InlineKeyboardButton(text="❓ Help", callback_data="/help"), 
-                 InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")]
+                [InlineKeyboardButton(text="🟢↪️ Sign-in", callback_data="/signin"),]
+                 [InlineKeyboardButton(text="🆕 Sign-up", callback_data="/signup")],
+                 [InlineKeyboardButton(text="❓ Help", callback_data="/help")], 
+                 [InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")]
             ])
             self.bot.sendMessage(chat_id, message, parse_mode='HTML', reply_markup=keyboard)
 
@@ -221,11 +221,11 @@ class TelegramBot:
             if json_resp['status']=='Dev Pre-Reg':
                 message = "<b>❌ [Error] This Device Has Been Previously Registered by Other Users.</b>"
                 keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(text="➕ Add New Device", callback_data="/add_device"),
-                    InlineKeyboardButton(text="📟 My Devices", callback_data="/get_devices"),
-                    InlineKeyboardButton(text="❓ Help", callback_data="/help"), 
-                    InlineKeyboardButton(text="⚜️ About Us", callback_data="/about"),
-                    InlineKeyboardButton(text="🔴↩️ Sign-out", callback_data="/signout")]
+                    [InlineKeyboardButton(text="➕ Add New Device", callback_data="/add_device")],
+                    [InlineKeyboardButton(text="📟 My Devices", callback_data="/get_devices")],
+                    [InlineKeyboardButton(text="❓ Help", callback_data="/help")], 
+                    [InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")],
+                    [InlineKeyboardButton(text="🔴↩️ Sign-out", callback_data="/signout")]
                 ])
                 self.temp_device[chat_id] = {}
                 self.last_command = None
@@ -234,8 +234,8 @@ class TelegramBot:
             elif json_resp['status']=='Dev Duplicate':
                 message = "<b>❌ [Error] You've Previously Registered This Device.</b>"
                 keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(text="Add New Device", callback_data="/add_device"),
-                      InlineKeyboardButton(text="My Devices", callback_data="/get_devices")]
+                    [InlineKeyboardButton(text="Add New Device", callback_data="/add_device")],
+                      [InlineKeyboardButton(text="My Devices", callback_data="/get_devices")]
                 ])
                 self.temp_device[chat_id] = {}
                 self.last_command = None
@@ -244,11 +244,11 @@ class TelegramBot:
             elif json_resp['status']=='Dev Not Exist':
                 message = "<b>❌ [Error] Couldn't Find Any Device With This Information. Please Check Again The Device ID and Password.</b>"
                 keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(text="🔂 Try Again", callback_data="/add_device"),
-                     InlineKeyboardButton(text="📟 My Devices", callback_data="/get_devices"),
-                     InlineKeyboardButton(text="❓ Help", callback_data="/help"), 
-                     InlineKeyboardButton(text="⚜️ About Us", callback_data="/about"),
-                     InlineKeyboardButton(text="🔴↩️ Sign-out", callback_data="/signout")]
+                    [InlineKeyboardButton(text="🔂 Try Again", callback_data="/add_device")],
+                     [InlineKeyboardButton(text="📟 My Devices", callback_data="/get_devices")],
+                     [InlineKeyboardButton(text="❓ Help", callback_data="/help")], 
+                     [InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")],
+                     [InlineKeyboardButton(text="🔴↩️ Sign-out", callback_data="/signout")]
                 ])
                 self.temp_device[chat_id] = {}
                 self.last_command = None
@@ -257,8 +257,8 @@ class TelegramBot:
             elif json_resp['status']=='Dev Added':
                 message = "<b>✅ Device Added Succesfully!</b>"
                 keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(text="Add New Device", callback_data="/add_device"),
-                     InlineKeyboardButton(text="My Devices", callback_data="/get_devices")]
+                    [InlineKeyboardButton(text="Add New Device", callback_data="/add_device")],
+                     [InlineKeyboardButton(text="My Devices", callback_data="/get_devices")]
                 ])
 
                 self.users[chat_id]['devices'].append(self.temp_device[chat_id]["dev_id"])
@@ -280,20 +280,20 @@ class TelegramBot:
                 message = "<b>📟 List of Registered Devices:</b>\n\n"
                 message += '\n'.join(f"▪️ <b>{device}</b>" for device in self.users[chat_id]['devices'])
                 keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(text="➕ Add New Device", callback_data="/add_device"),
-                    InlineKeyboardButton(text="❓ Help", callback_data="/help"), 
-                    InlineKeyboardButton(text="⚜️ About Us", callback_data="/about"),
-                    InlineKeyboardButton(text="🔴↩️ Sign-out", callback_data="/signout")]
+                    [InlineKeyboardButton(text="➕ Add New Device", callback_data="/add_device")],
+                    [InlineKeyboardButton(text="❓ Help", callback_data="/help")], 
+                    [InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")],
+                    [InlineKeyboardButton(text="🔴↩️ Sign-out", callback_data="/signout")]
                 ])
                 self.bot.sendMessage(chat_id, message, parse_mode='HTML', reply_markup=keyboard)
             
             else:
                 message = "<b>⚠️ [WARNING] No Devices Found! Do You Want to Add a New Device?</b>"
                 keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(text="➕ Add New Device", callback_data="/add_device"),
-                    InlineKeyboardButton(text="❓ Help", callback_data="/help"), 
-                    InlineKeyboardButton(text="⚜️ About Us", callback_data="/about"),
-                    InlineKeyboardButton(text="🔴↩️ Sign-out", callback_data="/signout")]
+                    [InlineKeyboardButton(text="➕ Add New Device", callback_data="/add_device")],
+                    [InlineKeyboardButton(text="❓ Help", callback_data="/help")], 
+                    [InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")],
+                    [InlineKeyboardButton(text="🔴↩️ Sign-out", callback_data="/signout")]
                 ])
 
                 self.bot.sendMessage(chat_id, message, parse_mode='HTML', reply_markup=keyboard)
@@ -306,7 +306,7 @@ class TelegramBot:
 
 if __name__ == "__main__":
 
-    TOKEN = '6202650288:AAFrwS5Q1OgrHg6HV8o9Mh5OBDqQHI5oSR4' 
+    TOKEN = '<TOKEN>' 
     tel_bot = TelegramBot(TOKEN)
     tel_bot.run()
 
