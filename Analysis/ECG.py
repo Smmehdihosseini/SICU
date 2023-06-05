@@ -9,8 +9,6 @@ from utils.ErrorHandler import BrokerError
 
 class ECG_Analysis:
         
-        exposed = True
-
         def __init__(self,
                  client_id,
                  topic_cat="ecg",
@@ -207,7 +205,7 @@ class ECG_Analysis:
                                      "min_rr":self.R_R_min,
                                      "max_rr":self.R_R_max,
                                      "std_rr":self.R_R_std,
-                                     "envelope":processed_ecg[0]["ECG_Clean"],
+                                     "envelope":processed_ecg[0]["ECG_Clean"].tolist(),
                                 }}
                             ]
                     
@@ -243,13 +241,6 @@ class ECG_Analysis:
 
 
 if __name__ == "__main__":
-
-        # Standard configuration to serve the url "localhost:8080"
-    conf = {
-        '/': {
-            'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
-        }
-    }
     
     ecg_analysis = ECG_Analysis(client_id="ECG-ANALYSIS",
                                 topic_cat="ecg",
@@ -263,13 +254,10 @@ if __name__ == "__main__":
                                 msg_broker="localhost",
                                 msg_broker_port=1883)
 
-    cherrypy.tree.mount(ecg_analysis, '/', conf)
     ecg_analysis.start()
-    cherrypy.engine.start()
 
     while True:
         time.sleep(ecg_analysis.temp_window())
         ecg_analysis.gen_report()
 
     bp_analysis.stop()
-    cherrypy.engine.block()
