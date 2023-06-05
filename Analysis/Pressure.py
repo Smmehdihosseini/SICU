@@ -8,8 +8,6 @@ from utils.ErrorHandler import BrokerError
 
 class Blood_Pressure_Analysis:
         
-        exposed = True
-
         def __init__(self,
                  client_id,
                  topic_cat="pressure",
@@ -200,13 +198,6 @@ class Blood_Pressure_Analysis:
 
 
 if __name__ == "__main__":
-
-        # Standard configuration to serve the url "localhost:8080"
-    conf = {
-        '/': {
-            'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
-        }
-    }
     
     bp_analysis = Blood_Pressure_Analysis(client_id="BP-ANALYSIS",
                                             topic_cat="pressure",
@@ -220,13 +211,10 @@ if __name__ == "__main__":
                                             msg_broker="localhost",
                                             msg_broker_port=1883)
 
-    cherrypy.tree.mount(bp_analysis, '/', conf)
     bp_analysis.start()
-    cherrypy.engine.start()
 
     while True:
         bp_analysis.gen_report()
         time.sleep(bp_analysis.temp_window())
 
     bp_analysis.stop()
-    cherrypy.engine.block()
