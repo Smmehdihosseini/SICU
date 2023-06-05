@@ -1,0 +1,24 @@
+[
+    {
+        "username": "UPDT89621",
+        "password": "Polito",
+        "organization": "Politecnico Di Torino",
+        "devices": [
+            "P-300"
+        ]
+    },
+    {
+        "username": "UMMC32578",
+        "password": "023293",
+        "organization": "Milan Medical Center",
+        "devices": []
+    },
+    {
+        "username": "UMUH22534",
+        "password": "78965",
+        "organization": "Mauriziano Umberto Hospital",
+        "devices": [
+            "P-TRC476"
+        ]
+    }
+]

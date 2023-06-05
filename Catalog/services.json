@@ -1,0 +1,54 @@
+[
+    {
+        "id": "OXA",
+        "name":"Oxygen Analysis",
+        "url":"localhost",
+        "port":8081,
+        "topic": "oxygen",
+        "status":"Offline"
+    },
+
+    {
+        "id": "BPA",
+        "name":"Blood Pressure Analysis",
+        "url":"localhost",
+        "port":8082,
+        "topic": "pressure",
+        "status":"Offline"
+    },
+
+    {
+        "id": "ECGA",
+        "name":"ECG Analysis",
+        "url":"localhost",
+        "port":8083,
+        "topic": "ecg",
+        "status":"Offline"
+    },
+
+    {
+        "id": "DB",
+        "name":"MongoDB Database",
+        "url":"localhost",
+        "port":27017,
+        "status":"Offline"
+    },
+
+    {
+        "id": "WEBUI",
+        "name":"Streamlit Web Application",
+        "url":"localhost",
+        "port":8501,
+        "topic": "ecg",
+        "status":"Offline"
+    },
+
+    {
+        "id": "TELEBOT",
+        "name":"Telegram Bot",
+        "url":"localhost",
+        "port":8501,
+        "topic": "ecg",
+        "status":"Offline"
+    }
+]

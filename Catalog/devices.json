@@ -1,0 +1,16 @@
+[
+    {
+        "dev_id": "P-300",
+        "password": "PYTRU7865%$",
+        "manufacture_date": "2023-6-1 10:30:29",
+        "type": "Sensor",
+        "reg_user": "UPDT89621"
+    },
+    {
+        "dev_id": "P-TRC476",
+        "password": "PETCS9734#$",
+        "manufacture_date": "2023-6-3 11:30:29",
+        "type": "Sensor",
+        "reg_user": "UMUH22534"
+    }
+]
