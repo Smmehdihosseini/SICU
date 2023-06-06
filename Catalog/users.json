@@ -4,7 +4,8 @@
         "password": "Polito",
         "organization": "Politecnico Di Torino",
         "devices": [
-            "P-300"
+            "P300",
+            "P-TRC476"
         ]
     },
     {
@@ -20,5 +21,11 @@
         "devices": [
             "P-TRC476"
         ]
+    },
+    {
+        "username": "UEHN89709",
+        "password": "123456789",
+        "organization": "Example Hospital Name",
+        "devices": []
     }
 ]
