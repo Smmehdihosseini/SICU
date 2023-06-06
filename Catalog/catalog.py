@@ -19,7 +19,7 @@ class Catalog:
                 input_json = cherrypy.request.json
                 username = input_json.get('username')
 
-                with open('users.json', 'r') as file:
+                with open('Catalog/users.json', 'r') as file:
                     users = json.load(file)
 
                 devices_list = []
@@ -41,7 +41,7 @@ class Catalog:
                 username = input_json.get('username')
                 password = input_json.get('password')
 
-                with open('users.json', 'r') as file:
+                with open('Catalog/users.json', 'r') as file:
                     users = json.load(file)
 
                 authenticated = False
@@ -64,7 +64,7 @@ class Catalog:
                 password = input_json.get('password')
                 organization = input_json.get('organization')
 
-                with open('users.json', 'r') as file:
+                with open('Catalog/users.json', 'r') as file:
                     users = json.load(file)
 
                 registered = False
@@ -87,7 +87,7 @@ class Catalog:
 
                     users.append(new_user)
 
-                    with open('users.json', 'w') as file:
+                    with open('Catalog/users.json', 'w') as file:
                         json.dump(users, file, indent=4)
 
                     return {'register': True}
@@ -99,10 +99,10 @@ class Catalog:
                 password = input_json.get('dev_password')
                 username = input_json.get('username')
 
-                with open('users.json', 'r') as file:
+                with open('Catalog/users.json', 'r') as file:
                     users = json.load(file)
 
-                with open('devices.json', 'r') as file:
+                with open('Catalog/devices.json', 'r') as file:
                     devices = json.load(file)
 
                 duplicate = False
@@ -138,10 +138,10 @@ class Catalog:
                         users[user_index]['devices'].append(device_id)
                         devices[dev_index]['reg_user'] = username
 
-                        with open('users.json', 'w') as file:
+                        with open('Catalog/users.json', 'w') as file:
                             json.dump(users, file, indent=4)
 
-                        with open('devices.json', 'w') as file:
+                        with open('Catalog/devices.json', 'w') as file:
                             json.dump(devices, file, indent=4)
 
                         return {'status': 'Dev Added'}
