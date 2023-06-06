@@ -1,31 +1,196 @@
 import telepot
+import paho.mqtt.client as PahoMQTT
 from telepot.loop import MessageLoop
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
-import time
+from colorama import Fore, Style
+from utils.ErrorHandler import BrokerError, MessageLoopError
+import datetime
 import requests
 import random
-from colorama import Fore, Style
-
+import json
+import time
 
 class TelegramBot:
 
-    def __init__(self, token):
+    def __init__(self,
+                 token,
+                 clientID='Telegram Bot',
+                 msg_broker='localhost',
+                 msg_broker_port=1883):
 
         self.bot = telepot.Bot(token)
         self.users = {}
+        self.devices = {}
         self.temp_users = {}
         self.temp_device = {}
         self.last_command = None
 
+        self.clientID = clientID
+        
+        # Instance of PahoMQTT Client
+        self.paho_mqtt = PahoMQTT.Client(clientID, True) 
+        
+        # Register the Callback
+        self.paho_mqtt.on_connect = self.on_connect
+        self.paho_mqtt.on_message = self.on_message
 
-    def genUsername(self, org_name):
+        # MQTT Broker URL
+        self.msg_broker = msg_broker 
+        self.msg_broker_port = msg_broker_port
+
+        # List of Available Topics
+        self.topic_list = ["oxygen", 'pressure', 'ecg']
+
+        # QoS
+        self.QoS = 2
+
+    def start(self):
+
+        try: 
+            # Connect  MQTT Broker Connection
+            self.paho_mqtt.connect(self.msg_broker, self.msg_broker_port)
+            self.paho_mqtt.loop_start()
+
+            ## Subscribe to All Topics in System
+            for topic in self.topic_list:
+                self.paho_mqtt.subscribe(f"+/{topic}/reports", self.QoS)
+                self.paho_mqtt.subscribe(f"+/{topic}/warnings", self.QoS)
+
+        except:
+            raise BrokerError("Error Occured with Connecting MQTT Broker")
+        
+        try:
+            self.bot.message_loop(self.bot_chat_handler)
+        except:
+            raise MessageLoopError("Error Occured with Starting Telegram Message Loop")
+        
+        print(f"{Fore.YELLOW}\n+ Telegram Bot: [ONLINE] ...\n----------------------------------------------------------------------------------{Fore.RESET}")
+        
+
+    def on_connect(self, paho_mqtt, userdata, flags, rc):
+
+        print(f"\n{Fore.YELLOW}+ Connected to MQTT Broker '{self.msg_broker}' [code={rc}]{Fore.RESET}")
+
+    def on_message(self, paho_mqtt , userdata, msg):
+
+        # On Getting New Message
+        # 'P300/oxygen/measurements
+        _id, _sens_cat, _sens_type = msg.topic.split('/')
+        msg_body = json.loads(msg.payload.decode('utf-8'))
+
+        print (f"{Fore.GREEN}{Style.BRIGHT}[SUB]{Style.NORMAL} {str(_sens_type).capitalize()} Recieved [{msg_body['bt']}]: Topic: '{msg.topic}' - QoS: '{str(msg.qos)}' - Message: {Fore.RESET}'{str(msg_body)}")
+
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="📟 My Devices", callback_data="/get_devices"),
+            InlineKeyboardButton(text="➕ Add New Device", callback_data="/add_device"),
+            InlineKeyboardButton(text="❓ Help", callback_data="/help"),
+            InlineKeyboardButton(text="🔴↩️Sign-out", callback_data="/signout")]
+        ])
+        
+        if _id in self.devices.keys():
+
+            chat_user = self.devices[_id]
+
+            # Pressure
+            if _sens_cat=="pressure":
+
+                if _sens_type=="reports":
+                                                
+                    message = f"<b> 🆕🩸📊 [Blood Pressure Report] for {_id}:</b>\n\n"
+                    message += f"⏳ <b>Date and Time:</b> <i>{str(datetime.datetime.fromtimestamp(msg_body['bt']).strftime('%Y-%m-%d %H:%M:%S'))}</i>\n"
+                    message += f"🔺 <b>Maximum Diastolic:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='max_diastolic'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Minimum Diastolic:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='min_diastolic'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Mean Diastolic:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='mean_diastolic'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Maximum Systolic:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='max_systolic'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Minimum Systolic:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='min_systolic'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Mean Systolic: </b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='mean_systolic'), None)['v'])} {msg_body['u']}</i>\n"
+
+                    self.bot.sendMessage(chat_user, message, parse_mode='HTML', reply_markup=keyboard)
+                
+                elif _sens_type=="warnings":
+
+                    if "Diastolic" in msg_body['e'][0]['n']:
+                        pressure_type_name = 'Diastolic'
+                    else:
+                        pressure_type_name = 'Systolic'
+                    
+                    message = f"<b> ⚠️🩸⚠️ [Blood Pressure Warning], {msg_body['e'][0]['n']}! for {_id} :</b>\n\n"
+                    message += f"⏳ <b>Date and Time:</b> <i>{str(datetime.datetime.fromtimestamp(msg_body['bt']).strftime('%Y-%m-%d %H:%M:%S'))}</i>\n" 
+                    message += f"🔺 <b>{pressure_type_name}:</b>: <i>{msg_body['e'][0]['v']} {msg_body['u']}</i>\n"
+
+                    self.bot.sendMessage(chat_user, message, parse_mode='HTML', reply_markup=keyboard)
+                        
+            elif _sens_cat=="oxygen":
+                
+                # Oxygen Saturation Measurement Microservice
+                if _sens_type=="reports":
+                    
+                    message = f"<b>🆕🫁📊 [Oxygen Saturation Report] for '{_id}':</b>\n\n"
+                    message += f"⏳ <b>Date and Time:</b> <i>{str(datetime.datetime.fromtimestamp(msg_body['bt']).strftime('%Y-%m-%d %H:%M:%S'))}</i>\n"
+                    message += f"🔺 <b>Maximum SpO2:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='max_spo2'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Minimum SpO2:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='min_spo2'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Mean SpO2:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='mean_spo2'), None)['v'])} {msg_body['u']}</i>\n"
+
+                    self.bot.sendMessage(chat_user, message, parse_mode='HTML', reply_markup=keyboard)
+                
+                elif _sens_type=="warnings":
+                    
+                    message = f"<b>⚠️🫁⚠️ [Oxygen Stauration Warning], {msg_body['e'][0]['n']}! for '{_id}':</b>\n\n"
+                    message += f"⏳ <b>Date and Time:</b> <i>{str(datetime.datetime.fromtimestamp(msg_body['bt']).strftime('%Y-%m-%d %H:%M:%S'))}</i>\n" 
+                    message += f"🔺 <b>SpO2:</b>: <i>{msg_body['e'][0]['v']} {msg_body['u']}</i>\n"
+
+                    self.bot.sendMessage(chat_user, message, parse_mode='HTML', reply_markup=keyboard)
+                    
+            elif _sens_cat=="ecg":
+                    
+                if _sens_type=="reports":
+                    
+                    message = f"<b>🆕🫀📊 [ECG Report] for '{_id}':</b>\n\n"
+                    message += f"⏳ <b>Date and Time:</b> <i>{str(datetime.datetime.fromtimestamp(msg_body['bt']).strftime('%Y-%m-%d %H:%M:%S'))}</i>\n"
+                    message += f"🔺 <b>Maximum Heartrate:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='max_freq'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Minimum Heartrate:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='min_freq'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Mean Heartrate:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='mean_freq'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Maximum R-R:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='max_rr'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Minimum R-R:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='min_rr'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Mean R-R:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='mean_rr'), None)['v'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>STD R-R:</b> <i>{str(next((e for e in msg_body['e'] if e.get('n')=='mean_rr'), None)['v'])} {msg_body['u']}</i>\n"
+
+                    self.bot.sendMessage(chat_user, message, parse_mode='HTML', reply_markup=keyboard)
+                
+                elif _sens_type=="warnings":
+                    
+                    warning = {"⏳ Date and Time:":datetime.datetime.fromtimestamp(msg_body['bt']).strftime('%Y-%m-%d %H:%M:%S'),
+                        "🏷 Maximum Heartrate :": f"{msg_body['e'][0]['v']['max_freq']} {msg_body['u']}",
+                        "🏷 Minimum Heartrate :": f"{msg_body['e'][0]['v']['min_freq']} {msg_body['u']}",
+                        "🏷 Mean Heartrate :": f"{msg_body['e'][0]['v']['mean_freq']} {msg_body['u']}",
+                        "🏷 Maximum R-R :": f"{msg_body['e'][0]['v']['max_rr']}",
+                        "🏷 Minimum R-R :": f"{msg_body['e'][0]['v']['min_rr']}",
+                        "🏷 Mean R-R :": f"{msg_body['e'][0]['v']['mean_rr']}",
+                        "🏷 STD R-R :": f"{msg_body['e'][0]['v']['std_rr']}"                        
+                        }
+                    
+                    message = f"<b>⚠️🫀⚠️ [ECG Warning], {msg_body['e'][0]['n']}! for '{_id}':</b>\n\n"
+                    message += f"⏳ <b>Date and Time:</b> <i>{str(datetime.datetime.fromtimestamp(msg_body['bt']).strftime('%Y-%m-%d %H:%M:%S'))}</i>\n"
+                    message += f"🔺 <b>Maximum Heartrate:</b> <i>{str(msg_body['e'][0]['v']['max_freq'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Minimum Heartrate:</b> <i>{str(msg_body['e'][0]['v']['min_freq'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Mean Heartrate:</b> <i>{str(msg_body['e'][0]['v']['mean_freq'])} {msg_body['u']}</i>\n"
+                    message += f"🔺 <b>Maximum R-R:</b> <i>{str(msg_body['e'][0]['v']['max_rr'])}</i>\n"
+                    message += f"🔺 <b>Minimum R-R:</b> <i>{str(msg_body['e'][0]['v']['min_rr'])}</i>\n"
+                    message += f"🔺 <b>Mean R-R:</b> <i>{str(msg_body['e'][0]['v']['mean_rr'])}</i>\n"
+                    message += f"🔺 <b>STD R-R:</b> <i>{str(msg_body['e'][0]['v']['std_rr'])}</i>\n"
+                    message += f"\n\n ‼️ <b>Note :</b> Please Visit SICU Web Application to See ECG Envelope"
+
+                    self.bot.sendMessage(chat_user, message, parse_mode='HTML', reply_markup=keyboard)
+
+
+    def gen_username(self, org_name):
         initials = ''.join(word[0].upper() for word in org_name.split(' '))
         num = str(random.randint(1, 99999))
         username = 'U' + initials + num
         return username
 
-    def BotChatHandler(self, msg):
+    def bot_chat_handler(self, msg):
 
         if 'data' in msg.keys(): 
             chat_id = msg['message']['chat']['id']
@@ -49,7 +214,7 @@ class TelegramBot:
                  [InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")]
             ])
 
-            self.bot.sendMessage(chat_id, '<b>Welcome to SICU Telegrambot! How can I Help You?</b>', parse_mode='HTML', reply_markup=keyboard)
+            self.bot.sendMessage(chat_id, '<b>Welcome to SICU Telegram Bot! How can I Help You?</b>', parse_mode='HTML', reply_markup=keyboard)
 
         if command=='/signin':
             self.last_command = '/signin'
@@ -79,6 +244,11 @@ class TelegramBot:
                 self.users[chat_id]["username"]=self.temp_users[chat_id]["username"]
                 self.users[chat_id]["password"]=self.temp_users[chat_id]["password"]
                 self.users[chat_id]["devices"]=json_resp["devices"]
+
+                # Add Corresponding Chat ID to Each Device for Later Message Parsing
+                for dev in json_resp["devices"]:
+                    self.devices[dev] = chat_id
+
                 self.temp_users[chat_id] = {}
                 self.last_command = None
                 message = "<b>🟢↪️ You're Signed-In Succesfully!</b>"
@@ -117,6 +287,10 @@ class TelegramBot:
         if command=='/signout':
             self.temp_users[chat_id] = {}
             self.users[chat_id] = {}
+
+            # Remove All Chat ID Devices for MQTT Messaging
+            self.devices = {key: val for key, val in self.devices.items() if val!=chat_id}
+
             message = "<b>🔴↩️ You're Signed-Out!</b>"
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text="🟢↪️ Sign-in", callback_data="/signin")],
@@ -142,7 +316,7 @@ class TelegramBot:
 
         elif self.last_command=='/signup' and "password" not in self.temp_users[chat_id].keys():
             self.temp_users[chat_id]["password"] = command
-            self.temp_users[chat_id]["username"] = self.genUsername(self.temp_users[chat_id]["organization"])
+            self.temp_users[chat_id]["username"] = self.gen_username(self.temp_users[chat_id]["organization"])
             message = "<b>🔄 Please Wait ...</b>"
             self.bot.sendMessage(chat_id, message, parse_mode='HTML')
 
@@ -262,6 +436,8 @@ class TelegramBot:
                 ])
 
                 self.users[chat_id]['devices'].append(self.temp_device[chat_id]["dev_id"])
+                # Assign Chat ID to Device
+                self.devices[self.temp_device[chat_id]["dev_id"]] = chat_id
                 self.temp_device[chat_id] = {}
                 self.last_command = None
                 self.bot.sendMessage(chat_id, message, parse_mode='HTML', reply_markup=keyboard)
@@ -298,17 +474,11 @@ class TelegramBot:
 
                 self.bot.sendMessage(chat_id, message, parse_mode='HTML', reply_markup=keyboard)
 
-    def run(self):
-
-        self.bot.message_loop(self.BotChatHandler)
-        print(f"{Fore.YELLOW}\n+ Telegram Bot: [ONLINE] ...\n----------------------------------------------------------------------------------{Fore.RESET}")
-
-
 if __name__ == "__main__":
 
     TOKEN = '<TOKEN>' 
     tel_bot = TelegramBot(TOKEN)
-    tel_bot.run()
+    tel_bot.start()
 
     while True:
         pass
