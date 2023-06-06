@@ -6,3 +6,6 @@ class DatabaseError(Exception):
 
 class BrokerError(Exception):
     pass
+
+class MessageLoopError(Exception):
+    pass
