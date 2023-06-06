@@ -106,7 +106,7 @@ class ECG_Analysis:
                         "bn":f"{self.msg_broker}:{self.msg_broker_port}/{self.user_id}/{self.topic_cat}/{self.topic_warning}",
                         "id":self.user_id,
                         "bt":timestamp,
-                        "u":"Hz",
+                        "u":"BPM",
                         "e": msg
                         }
             
@@ -123,7 +123,7 @@ class ECG_Analysis:
                         "bn":f"{self.msg_broker}:{self.msg_broker_port}/{self.user_id}/{self.topic_cat}/{self.topic_report}",
                         "id":self.user_id,
                         "bt":timestamp,
-                        "u":"Hz",
+                        "u":"BPM",
                         "e": msg
                         }
             
