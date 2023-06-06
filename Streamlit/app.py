@@ -125,7 +125,7 @@ class SICU_WEB:
                     if login_btn:
 
                         st.session_state['auth'] = True
-                        st.session_state['patients'] ['P-300', 'P-AB-400']
+                        st.session_state['patients'] = ['P300', 'P-AB-400']
 
         else:
             with auth_placeholder:
