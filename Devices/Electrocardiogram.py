@@ -88,7 +88,7 @@ class Electrocardiogram:
                     "bt":timestamp,
                     "u":"mm",
                     "e": [
-                          {"n":"ECG Segment", "v":msg.tolist()}
+                          {"n":"ecg_seg", "v":msg.tolist()}
                         ]
                     }
         

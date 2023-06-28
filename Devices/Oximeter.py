@@ -93,7 +93,7 @@ class Oximeter:
             oxygen_saturation = random.randint(70, self.sat_threshold-1)
 
         measurement = [
-                        {"n":"SpO2", "v":oxygen_saturation}
+                        {"n":"spo2", "v":oxygen_saturation}
                       ] 
         
         return measurement

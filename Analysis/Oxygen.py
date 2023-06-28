@@ -87,7 +87,7 @@ class Oxygen_Analysis:
             print (f"{Fore.GREEN}{Style.BRIGHT}[SUB]{Style.NORMAL} {str(_sens_type).capitalize()} Recieved [{msg_body['bt']}]: Topic: '{msg.topic}' - QoS: '{str(msg.qos)}' - Message: {Fore.RESET}'{str(msg_body)}")
 
             # Current SpO2 Value
-            ox_val = next((e for e in msg_body['e'] if e.get("n")=="SpO2"), None)['v']
+            ox_val = next((e for e in msg_body['e'] if e.get("n")=="spo2"), None)['v']
 
             # Array of SpO2 in Defined Window Size
             self.ox_sat_level = np.append(self.ox_sat_level,
@@ -96,7 +96,8 @@ class Oxygen_Analysis:
             # Low Oxygen Saturation
             if int(ox_val)<self.ox_sat_threshold:
                 warn_msg = [
-                                {"n":"SpO2 Low", "v":ox_val}
+                                {"n":"warning", "v":"SpO2 Low"},
+                                {"n":"value", "v":ox_val}
                             ]
                 self.publish_warnings(warn_msg)	
 

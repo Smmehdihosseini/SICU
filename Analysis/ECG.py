@@ -92,7 +92,7 @@ class ECG_Analysis:
             print (f"{Fore.GREEN}{Style.BRIGHT}[SUB]{Style.NORMAL} {str(_sens_type).capitalize()} Recieved [{msg_body['bt']}]: Topic: '{msg.topic}' - QoS: '{str(msg.qos)}' - Message: {Fore.RESET}'{str(msg_body)}")
 
             # Current ECG Value
-            ecg_segment = next((e for e in msg_body['e'] if e.get("n")=="ECG Segment"), None)['v']
+            ecg_segment = next((e for e in msg_body['e'] if e.get("n")=="ecg_seg"), None)['v']
 
             # Array of ECG in Defined Window Size
             self.ecg_data = np.append(self.ecg_data, ecg_segment)
@@ -160,7 +160,8 @@ class ECG_Analysis:
                 if self.heartrate_mean > self.hr_mean_threshold['upper_bound']:
 
                     warn_msg = [
-                                {"n":"Tachycardia",
+                                {"n":"warning", "v":"Tachycardia"},
+                                {"n":"value",
                                  "v":{
                                      "mean_freq":self.heartrate_mean,
                                      "min_freq":self.heartrate_min,
@@ -178,7 +179,8 @@ class ECG_Analysis:
                 elif self.heartrate_mean > self.hr_mean_threshold['lower_bound']:
 
                     warn_msg = [
-                                {"n":"Bradycardia",
+                                {"n":"warning", "v":"Bradycardia"},
+                                {"n":"value",
                                  "v":{
                                      "mean_freq":self.heartrate_mean,
                                      "min_freq":self.heartrate_min,
@@ -196,7 +198,8 @@ class ECG_Analysis:
                 if self.R_R_std > self.r_r_std_threshold:
 
                     warn_msg = [
-                                {"n":"Arrhythmia",
+                                {"n":"warning", "v":"Arrhythmia"},
+                                {"n":"value",
                                  "v":{
                                      "mean_freq":self.heartrate_mean,
                                      "min_freq":self.heartrate_min,

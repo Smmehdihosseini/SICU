@@ -104,28 +104,33 @@ class Blood_Pressure_Analysis:
             # High Systolic
             if int(systolic_val)>self.systolic_desc_bound['upper_bound']:
                 warn_msg = [
-                                {"n":"Systolic High", "v":systolic_val}
+                                {"n":"warning", "v":"Systolic High"},
+                                {"n":"value", "v":systolic_val}
                             ]
                 self.publish_warnings(warn_msg)
 
             # Low Systolic
             elif int(systolic_val)<self.systolic_desc_bound['lower_bound']:
                 warn_msg = [
-                                {"n":"Systolic Low", "v":systolic_val}
+                                {"n":"warning", "v":"Systolic Low"},
+                                {"n":"value", "v":systolic_val}
                             ]
                 self.publish_warnings(warn_msg)
 
             # High Diastolic
             if int(diastolic_val)>self.diastolic_desc_bound['upper_bound']:
                 warn_msg = [
-                                {"n":"Diastolic High", "v":diastolic_val}
+                                {"n":"warning", "v":"Diastolic High"},
+                                {"n":"value", "v":diastolic_val}
+
                             ]
                 self.publish_warnings(warn_msg)
 
             # Low Diastolic
             elif int(diastolic_val)<self.diastolic_desc_bound['lower_bound']:
                 warn_msg = [
-                                {"n":"Diastolic Low", "v":diastolic_val}
+                                {"n":"warning", "v":"Diastolic Low"},
+                                {"n":"value", "v":diastolic_val}
                             ]
                 self.publish_warnings(warn_msg)		
 
