@@ -68,7 +68,7 @@ class MongoDB:
 
                 for collection in ['measurements', 'reports', 'warnings']:
                     if collection not in self.db.list_collection_names():
-                        create_collection = self.db['collection']
+                        create_collection = self.db[collection]
                                  
             except Exception as e:
                 raise DatabaseError("Error Occured with Starting MongoDB Database")
@@ -98,118 +98,15 @@ class MongoDB:
 
             print (f"{Fore.GREEN}{Style.BRIGHT}[SUB]{Style.NORMAL} {str(_sens_type).capitalize()} Recieved [{msg_body['bt']}]: Topic: '{msg.topic}' - QoS: '{str(msg.qos)}' - Message: {Fore.RESET}'{str(msg_body)}")
 
-            # Pressure
-            if _sens_cat=="pressure":
-                
-                # Pressure Measurement Microservice
-                if _sens_type=="measurements":
-
-                    doc = {"timestamp":msg_body['bt'],
-                            "user_id": _id,
-                            "sens_cat": _sens_cat,
-                            "sens_type": _sens_type,
-                            "unit": msg_body['u'],
-                            "diastolic":  next((e for e in msg_body['e'] if e.get("n")=="diastolic"), None)['v'],
-                            "systolic": next((e for e in msg_body['e'] if e.get("n")=="systolic"), None)['v']}
-
-                elif _sens_type=="reports":
-
-                    doc = {"timestamp":msg_body['bt'],
-                        "user_id": msg_body['id'],
-                        "sens_cat": _sens_cat,
-                        "sens_type": _sens_type,
-                        "unit": msg_body['u'],
-                        "max_diastolic": next((e for e in msg_body['e'] if e.get("n")=="max_diastolic"), None)['v'],
-                        "min_diastolic": next((e for e in msg_body['e'] if e.get("n")=="min_diastolic"), None)['v'],
-                        "mean_diastolic": next((e for e in msg_body['e'] if e.get("n")=="mean_diastolic"), None)['v'],
-                        "max_systolic": next((e for e in msg_body['e'] if e.get("n")=="max_systolic"), None)['v'],
-                        "min_systolic": next((e for e in msg_body['e'] if e.get("n")=="min_systolic"), None)['v'],
-                        "mean_systolic": next((e for e in msg_body['e'] if e.get("n")=="mean_systolic"), None)['v']}
-                
-                elif _sens_type=="warnings":
-
-                    doc = {"timestamp":msg_body['bt'],
-                        "user_id": msg_body['id'],
-                        "sens_cat": _sens_cat,
-                        "sens_type": _sens_type,
-                        "unit": msg_body['u'],
-                        "warning": msg_body['e'][0]['n'],
-                        "value": msg_body['e'][0]['v']}
-                        
-            elif _sens_cat=="oxygen":
-                
-                # Oxygen Saturation Measurement Microservice
-                if _sens_type=="measurements":
-
-                    doc = {"timestamp":msg_body['bt'],
-                            "user_id": _id,
-                            "sens_cat": _sens_cat,
-                            "sens_type": _sens_type,
-                            "unit": msg_body['u'],
-                            "spo2":  next((e for e in msg_body['e'] if e.get("n")=="SpO2"), None)['v']
-                            }
-                    
-                elif _sens_type=="reports":
-
-                    doc = {"timestamp":msg_body['bt'],
-                        "user_id": msg_body['id'],
-                        "sens_cat": _sens_cat,
-                        "sens_type": _sens_type,
-                        "unit": msg_body['u'],
-                        "max_spo2": next((e for e in msg_body['e'] if e.get("n")=="max_spo2"), None)['v'],
-                        "min_spo2": next((e for e in msg_body['e'] if e.get("n")=="min_spo2"), None)['v'],
-                        "mean_spo2": next((e for e in msg_body['e'] if e.get("n")=="mean_spo2"), None)['v']}
-                
-                elif _sens_type=="warnings":
-
-                    doc = {"timestamp":msg_body['bt'],
-                        "user_id": msg_body['id'],
-                        "sens_cat": _sens_cat,
-                        "sens_type": _sens_type,
-                        "unit": msg_body['u'],
-                        "warning": msg_body['e'][0]['n'],
-                        "value": msg_body['e'][0]['v']}
-                    
-
-            elif _sens_cat=="ecg":
-                
-                # ECG Measurement Microservice
-                if _sens_type=="measurements":
-
-                    doc = {"timestamp":msg_body['bt'],
-                            "user_id": _id,
-                            "sens_cat": _sens_cat,
-                            "sens_type": _sens_type,
-                            "unit": msg_body['u'],
-                            "ecg_seg":  next((e for e in msg_body['e'] if e.get("n")=="ECG Segment"), None)['v']
-                            }
-                    
-                elif _sens_type=="reports":
-
-                    doc = {"timestamp":msg_body['bt'],
-                        "user_id": msg_body['id'],
-                        "sens_cat": _sens_cat,
-                        "sens_type": _sens_type,
-                        "unit": msg_body['u'],
-                        "mean_freq": next((e for e in msg_body['e'] if e.get("n")=="mean_freq"), None)['v'],
-                        "min_freq": next((e for e in msg_body['e'] if e.get("n")=="min_freq"), None)['v'],
-                        "max_freq": next((e for e in msg_body['e'] if e.get("n")=="max_freq"), None)['v'],
-                        "mean_rr": next((e for e in msg_body['e'] if e.get("n")=="mean_rr"), None)['v'],
-                        "min_rr": next((e for e in msg_body['e'] if e.get("n")=="min_rr"), None)['v'],
-                        "max_rr": next((e for e in msg_body['e'] if e.get("n")=="max_rr"), None)['v'],
-                        "std_rr": next((e for e in msg_body['e'] if e.get("n")=="std_rr"), None)['v']
-                        }
-                
-                elif _sens_type=="warnings":
-
-                    doc = {"timestamp":msg_body['bt'],
-                        "user_id": msg_body['id'],
-                        "sens_cat": _sens_cat,
-                        "sens_type": _sens_type,
-                        "unit": msg_body['u'],
-                        "warning": msg_body['e'][0]['n'],
-                        "value": msg_body['e'][0]['v']}
-
+            doc = {"timestamp":msg_body['bt'],
+                    "user_id": _id,
+                    "sens_cat": _sens_cat,
+                    "sens_type": _sens_type,
+                    "unit": msg_body['u']}
+            
+            for field in msg_body['e']:
+                doc[field['n']] = field['v']
+            
             # Insert Measurements in Database
             result = self.db[_sens_type].insert_one(doc)
 
