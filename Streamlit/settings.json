@@ -1,0 +1,17 @@
+{
+    "service_settings": {
+                    "path_conf":"conf.json",
+                    "app_title":"SICU",
+                    "app_layout":"wide",
+                    "app_sidebar_init_state":"expanded",
+                    "app_logo_path":".streamlit/sicu_logo.png",
+                    "app_sidebarlogo_path":".streamlit/sicu_sidebar.png",
+                    "dir_config":".streamlit/config.toml"
+                    },
+    "timesout_settings": {
+                        "conf_timeout":2,
+                        "conf_maxretry":10,
+                        "serv_timeout":10,
+                        "update_threshold":10
+                    }                
+}
