@@ -5,7 +5,9 @@
         "organization": "Politecnico Di Torino",
         "devices": [
             "P300",
-            "P-TRC476"
+            "P-TRC476",
+            "P-YRD765",
+            "P-YTES5"
         ]
     },
     {
@@ -26,6 +28,12 @@
         "username": "UEHN89709",
         "password": "123456789",
         "organization": "Example Hospital Name",
+        "devices": []
+    },
+    {
+        "username": "UPT66903",
+        "password": "123456",
+        "organization": "Politecnico Torino",
         "devices": []
     }
 ]

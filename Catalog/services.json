@@ -1,54 +1,44 @@
 [
     {
-        "id": "OXA",
-        "name":"Oxygen Analysis",
-        "url":"localhost",
-        "port":8081,
-        "topic": "oxygen",
-        "status":"Offline"
-    },
-
-    {
-        "id": "BPA",
-        "name":"Blood Pressure Analysis",
-        "url":"localhost",
-        "port":8082,
-        "topic": "pressure",
-        "status":"Offline"
-    },
-
-    {
-        "id": "ECGA",
-        "name":"ECG Analysis",
-        "url":"localhost",
-        "port":8083,
-        "topic": "ecg",
-        "status":"Offline"
-    },
-
-    {
-        "id": "DB",
-        "name":"MongoDB Database",
-        "url":"localhost",
-        "port":27017,
-        "status":"Offline"
-    },
-
-    {
-        "id": "WEBUI",
-        "name":"Streamlit Web Application",
-        "url":"localhost",
-        "port":8501,
-        "topic": "ecg",
-        "status":"Offline"
-    },
-
-    {
-        "id": "TELEBOT",
-        "name":"Telegram Bot",
-        "url":"localhost",
-        "port":8501,
-        "topic": "ecg",
-        "status":"Offline"
+        "id": "MDB",
+        "name": "MongoDB",
+        "endpoints": {
+            "REST": {
+                "name": "REST",
+                "url": "127.0.0.1",
+                "port": 8084,
+                "address": "http://127.0.0.1:8084",
+                "methods": [
+                    "GET"
+                ]
+            },
+            "DB": {
+                "name": "DB",
+                "url": "127.0.0.1",
+                "port": 27017,
+                "address": "http://127.0.0.1:27017",
+                "database_name": "sicu",
+                "database_collections": [
+                    "measurements",
+                    "warnings",
+                    "reports"
+                ]
+            }
+        },
+        "connections": {
+            "MQTT": {
+                "name": "MQTT",
+                "url": "127.0.0.1",
+                "port": 1883,
+                "address": "http://127.0.0.1:1883",
+                "qos": 2,
+                "topics": [
+                    "+/oxygen/#",
+                    "+/pressure/#",
+                    "+/ecg/#"
+                ]
+            }
+        },
+        "last_update": "2023-07-02 20:46:54"
     }
 ]

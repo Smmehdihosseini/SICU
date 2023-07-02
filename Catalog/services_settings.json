@@ -1,0 +1,14 @@
+{
+    "service_settings": {
+                    "path_conf":"services_conf.json",
+                    "path_users":"users.json",
+                    "path_devices":"devices.json",
+                    "path_services":"services.json",
+                    "time_format":"%Y-%m-%d %H:%M:%S"
+                    },
+    "timesout_settings": {
+                        "conf_timeout":2,
+                        "conf_maxretry":10,
+                        "update_threshold":20
+                    }                
+}
