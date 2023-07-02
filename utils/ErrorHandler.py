@@ -9,3 +9,12 @@ class BrokerError(Exception):
 
 class MessageLoopError(Exception):
     pass
+
+class ConfError(Exception):
+    pass
+
+class SettError(Exception):
+    pass
+
+class CatError(Exception):
+    pass
