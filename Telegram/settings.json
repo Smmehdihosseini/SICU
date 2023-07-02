@@ -1,0 +1,12 @@
+{
+    "service_settings": {
+                    "path_conf":"conf.json",
+                    "telegram_token":"6285354271:AAF1zF47n0eTBP9eKSanezPs1aP1FiwS5So"
+                    },
+    "timesout_settings": {
+                        "conf_timeout":2,
+                        "conf_maxretry":10,
+                        "serv_timeout":10,
+                        "update_threshold":10
+                    }                
+}

@@ -1,0 +1,38 @@
+{
+    "service_catalog": {
+        "url":"127.0.0.1",
+        "port":8080,
+        "address":"http://127.0.0.1:8080",
+        "methods": [
+            "GET",
+            "PUT",
+            "POST"
+        ]
+    },
+    "service_info":
+    {
+        "id":"TLB",
+        "name":"Telegram Bot",
+        "endpoints":{
+                    },
+        "connections":{
+            "MQTT":
+                    {
+                        "name":"MQTT",
+                        "url":"127.0.0.1",
+                        "port":1883,
+                        "address":"http://127.0.0.1:1883",
+                        "qos":2,
+                        "topics":[
+                           "+/oxygen/reports",
+                           "+/oxygen/warnings",
+                           "+/pressure/reports",
+                           "+/pressure/warnings",
+                           "+/ecg/reports",
+                           "+/ecg/warnings"
+                        ]
+                    }
+        }
+    },
+    "last_update":"2023-06-30 04:55:10"
+}
