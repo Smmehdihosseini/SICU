@@ -1,0 +1,58 @@
+{
+    "service_catalog": {
+        "url":"127.0.0.1",
+        "port":8080,
+        "address":"http://127.0.0.1:8080",
+        "methods": [
+            "GET",
+            "PUT",
+            "POST"
+        ]
+    },
+    "service_info":
+    {
+        "id":"MDB",
+        "name":"MongoDB",
+        "endpoints":{
+            "REST":
+                    {
+                        "name":"REST",
+                        "url":"127.0.0.1",
+                        "port":8084,
+                        "address":"http://127.0.0.1:8084",
+                        "methods":[
+                            "GET"
+                        ]
+                    },
+            "DB":
+                    {
+                        "name":"DB",
+                        "url":"127.0.0.1",
+                        "port":27017,
+                        "address":"http://127.0.0.1:27017",
+                        "database_name":"sicu",
+                        "database_collections": [
+                            "measurements",
+                            "warnings",
+                            "reports"
+                        ]
+                    }
+        },
+        "connections":{
+            "MQTT":
+                    {
+                        "name":"MQTT",
+                        "url":"127.0.0.1",
+                        "port":1883,
+                        "address":"http://127.0.0.1:1883",
+                        "qos":2,
+                        "topics":[
+                           "+/oxygen/#",
+                           "+/pressure/#",
+                           "+/ecg/#" 
+                        ]
+                    }
+        }
+    },
+    "last_update":"2023-06-30 04:55:10"
+}

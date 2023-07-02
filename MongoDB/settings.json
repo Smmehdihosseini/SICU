@@ -1,0 +1,11 @@
+{
+    "service_settings": {
+                    "path_conf":"conf.json"
+                    },
+    "timesout_settings": {
+                        "conf_timeout":2,
+                        "conf_maxretry":10,
+                        "serv_timeout":10,
+                        "update_threshold":10
+                    }                
+}
