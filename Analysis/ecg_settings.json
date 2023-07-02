@@ -1,0 +1,18 @@
+{
+    "service_settings": {
+                    "path_conf":"ecg_conf.json",
+                    "hr_mean_threshold":{
+                        "lower_bound":80,
+                        "upper_bound":100
+                    },
+                    "r_r_std_threshold":0.025,
+                    "analysis_window":60,
+                    "sampling_rate":1000
+                    },
+    "timesout_settings": {
+                        "conf_timeout":2,
+                        "conf_maxretry":10,
+                        "serv_timeout":10,
+                        "update_threshold":10
+                    }                
+}
