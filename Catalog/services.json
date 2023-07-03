@@ -1,30 +1,8 @@
 [
     {
-        "id": "MDB",
-        "name": "MongoDB",
-        "endpoints": {
-            "REST": {
-                "name": "REST",
-                "url": "127.0.0.1",
-                "port": 8084,
-                "address": "http://127.0.0.1:8084",
-                "methods": [
-                    "GET"
-                ]
-            },
-            "DB": {
-                "name": "DB",
-                "url": "127.0.0.1",
-                "port": 27017,
-                "address": "http://127.0.0.1:27017",
-                "database_name": "sicu",
-                "database_collections": [
-                    "measurements",
-                    "warnings",
-                    "reports"
-                ]
-            }
-        },
+        "id": "OXA",
+        "name": "Oxygen Analysis",
+        "endpoints": {},
         "connections": {
             "MQTT": {
                 "name": "MQTT",
@@ -32,13 +10,16 @@
                 "port": 1883,
                 "address": "http://127.0.0.1:1883",
                 "qos": 2,
-                "topics": [
-                    "+/oxygen/#",
-                    "+/pressure/#",
-                    "+/ecg/#"
-                ]
+                "topics": {
+                    "category": "oxygen",
+                    "subscriber": "measurements",
+                    "publisher": {
+                        "reports": "reports",
+                        "warnings": "warnings"
+                    }
+                }
             }
         },
-        "last_update": "2023-07-02 20:46:54"
+        "last_update": "2023-07-03 13:20:11"
     }
 ]

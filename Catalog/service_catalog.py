@@ -142,11 +142,13 @@ class ServiceCatalog:
     
     # Get User Devices
     def get_user_devices(self, username):
+        self.init_load_users()
         user_devs =  next((user for user in self.users if user["username"]==username), None)['devices']
         return {"devices": user_devs}
     
     # User Authentication
     def auth_user(self, username, password):
+        self.init_load_users()
         user_obj = next((user for user in self.users if user["username"]==username and user["password"]==password), None)
         if user_obj:
             return {'authenticated': True,
@@ -156,6 +158,7 @@ class ServiceCatalog:
         
     # User Registeration	
     def reg_user(self, organization, password):
+        self.init_load_users()
         
         user_obj = True
         while user_obj:
@@ -174,6 +177,8 @@ class ServiceCatalog:
         
     # Add Device By User
     def add_dev(self, dev_id, dev_password, username):
+        self.init_load_devices()
+        self.init_load_users()
         dev_obj = next(((index, dev) for index, dev in enumerate(self.devices) if dev["dev_id"]==dev_id and dev["dev_password"]==dev_password), None)
         if dev_obj:
             dev_ind, dev_info = dev_obj
@@ -193,6 +198,7 @@ class ServiceCatalog:
             return {'status': "Device Not Found"}
         
     def reg_service(self, params):
+        self.init_load_services()
         serv_obj = next(((index, serv) for index, serv in enumerate(self.services) if serv["id"]==params['id']), None)
 
         if serv_obj:
@@ -226,6 +232,7 @@ class ServiceCatalog:
                 return {'status': "Failed", 'log':f'Address(s) [{", ".join(address_dup_list)}] Already Exists'}
             
     def check_services(self):
+        self.init_load_services()
         offline_services = []
         online_services = []
         time_now = datetime.now().strftime(self.time_format)
