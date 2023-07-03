@@ -3,12 +3,7 @@
         "username": "UPDT89621",
         "password": "Polito",
         "organization": "Politecnico Di Torino",
-        "devices": [
-            "P300",
-            "P-TRC476",
-            "P-YRD765",
-            "P-YTES5"
-        ]
+        "devices": []
     },
     {
         "username": "UMMC32578",
@@ -35,5 +30,13 @@
         "password": "123456",
         "organization": "Politecnico Torino",
         "devices": []
+    },
+    {
+        "username": "USITH21071",
+        "password": "1234?!Mh",
+        "organization": "Smart ICU Torino Hospital",
+        "devices": [
+            "P-ABC342"
+        ]
     }
 ]

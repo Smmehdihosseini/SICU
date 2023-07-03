@@ -1,5 +1,100 @@
 [
     {
+        "id": "TLB",
+        "name": "Telegram Bot",
+        "endpoints": {},
+        "connections": {
+            "MQTT": {
+                "name": "MQTT",
+                "url": "127.0.0.1",
+                "port": 1883,
+                "address": "http://127.0.0.1:1883",
+                "qos": 2,
+                "topics": [
+                    "+/oxygen/reports",
+                    "+/oxygen/warnings",
+                    "+/pressure/reports",
+                    "+/pressure/warnings",
+                    "+/ecg/reports",
+                    "+/ecg/warnings"
+                ]
+            }
+        },
+        "last_update": "2023-07-03 18:48:27"
+    },
+    {
+        "id": "BPA",
+        "name": "Blood Pressure Analysis",
+        "endpoints": {},
+        "connections": {
+            "MQTT": {
+                "name": "MQTT",
+                "url": "127.0.0.1",
+                "port": 1883,
+                "address": "http://127.0.0.1:1883",
+                "qos": 2,
+                "topics": {
+                    "category": "pressure",
+                    "subscriber": "measurements",
+                    "publisher": {
+                        "reports": "reports",
+                        "warnings": "warnings"
+                    }
+                }
+            }
+        },
+        "last_update": "2023-07-03 18:48:24"
+    },
+    {
+        "id": "ECA",
+        "name": "Electrocardiogram Analysis",
+        "endpoints": {},
+        "connections": {
+            "MQTT": {
+                "name": "MQTT",
+                "url": "127.0.0.1",
+                "port": 1883,
+                "address": "http://127.0.0.1:1883",
+                "qos": 2,
+                "topics": {
+                    "category": "ecg",
+                    "subscriber": "measurements",
+                    "publisher": {
+                        "reports": "reports",
+                        "warnings": "warnings"
+                    }
+                }
+            }
+        },
+        "last_update": "2023-07-03 18:48:24"
+    },
+    {
+        "id": "SWA",
+        "name": "Streamlit Web Application",
+        "endpoints": {
+            "REST": {
+                "name": "REST",
+                "url": "127.0.0.1",
+                "port": 8501,
+                "address": "http://127.0.0.1:8501"
+            }
+        },
+        "connections": {
+            "MongoDB": {
+                "REST": {
+                    "name": "REST",
+                    "url": "127.0.0.1",
+                    "port": 8084,
+                    "address": "http://127.0.0.1:8084",
+                    "methods": [
+                        "GET"
+                    ]
+                }
+            }
+        },
+        "last_update": "2023-07-03 18:48:26"
+    },
+    {
         "id": "OXA",
         "name": "Oxygen Analysis",
         "endpoints": {},
@@ -20,6 +115,48 @@
                 }
             }
         },
-        "last_update": "2023-07-03 13:20:11"
+        "last_update": "2023-07-03 18:48:24"
+    },
+    {
+        "id": "MDB",
+        "name": "MongoDB",
+        "endpoints": {
+            "REST": {
+                "name": "REST",
+                "url": "127.0.0.1",
+                "port": 8084,
+                "address": "http://127.0.0.1:8084",
+                "methods": [
+                    "GET"
+                ]
+            },
+            "DB": {
+                "name": "DB",
+                "url": "127.0.0.1",
+                "port": 27017,
+                "address": "http://127.0.0.1:27017",
+                "database_name": "sicu",
+                "database_collections": [
+                    "measurements",
+                    "warnings",
+                    "reports"
+                ]
+            }
+        },
+        "connections": {
+            "MQTT": {
+                "name": "MQTT",
+                "url": "127.0.0.1",
+                "port": 1883,
+                "address": "http://127.0.0.1:1883",
+                "qos": 2,
+                "topics": [
+                    "+/oxygen/#",
+                    "+/pressure/#",
+                    "+/ecg/#"
+                ]
+            }
+        },
+        "last_update": "2023-07-03 18:48:14"
     }
 ]
