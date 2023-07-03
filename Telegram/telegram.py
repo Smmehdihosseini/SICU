@@ -421,7 +421,7 @@ class TelegramBot:
                     message += f"▪️ <b>Organization:</b> <i>{self.temp_users[chat_id]['organization']}</i>\n\n"
                     message += f"❗️<b>Note:</b> <i>DO NOT SHARE THIS CREDENTIALS WITH ANYONE</i>\n"
                     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                            [InlineKeyboardButton(text="🟢↪️ Sign-in", callback_data="/add_device")],
+                            [InlineKeyboardButton(text="🟢↪️ Sign-in", callback_data="/signin")],
                             [InlineKeyboardButton(text="❓ Help", callback_data="/help")],
                             [InlineKeyboardButton(text="⚜️ About Us", callback_data="/about")]
                         ])
