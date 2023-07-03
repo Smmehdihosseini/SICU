@@ -260,7 +260,7 @@ class ECGAnalysis:
                         
                         self.publish_warnings(warn_msg, dev_id)                
 
-                    elif self.heartrate_mean > self.hr_mean_threshold['lower_bound']:
+                    elif self.heartrate_mean < self.hr_mean_threshold['lower_bound']:
 
                         warn_msg = [
                                     {"n":"warning", "v":"Bradycardia"},

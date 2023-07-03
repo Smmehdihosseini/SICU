@@ -2,7 +2,7 @@
     "service_settings": {
                     "path_conf":"ecg_conf.json",
                     "hr_mean_threshold":{
-                        "lower_bound":80,
+                        "lower_bound":60,
                         "upper_bound":100
                     },
                     "r_r_std_threshold":0.025,
