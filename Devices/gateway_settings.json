@@ -1,0 +1,30 @@
+{
+    "device_settings": {
+                    "path_conf":"gateway_conf.json",
+                    "oximeter":{
+                                "oxygen_saturation_threshold":90,
+                                "prob":0.9,
+                                "sample_frequency":1
+                    },
+                    "sphygmomanometer":{
+                                "systolic_threshold":90,
+                                "diastolic_threshold":60,
+                                "prob":0.9,
+                                "sample_frequency":5
+                    },
+                    "electrocardiogram":{
+                                "ecg_duration":60,
+                                "sampling_rate":1000,
+                                "tachycardia_threshold":100,
+                                "bradycardia_threshold":60,
+                                "prob":0.9,
+                                "sample_frequency":1
+                    }
+                    },
+    "timesout_settings": {
+                        "conf_timeout":2,
+                        "conf_maxretry":10,
+                        "dev_timeout":10,
+                        "update_threshold":10
+                    }                
+}

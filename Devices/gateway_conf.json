@@ -1,0 +1,39 @@
+{
+    "device_catalog": {
+        "url":"127.0.0.1",
+        "port":8081,
+        "address":"http://127.0.0.1:8081",
+        "methods": [
+            "GET",
+            "POST"
+        ]
+    },
+    "device_info":
+    {
+        "dev_id":"P-ABC342",
+        "dev_password":"PYTRU7865%$",
+        "dev_manufacture_date": "2023-06-01 10:30:29",
+        "dev_type": "Gateway",
+        "endpoints":{
+                    },
+        "connections":{
+            "MQTT":
+                    {
+                        "name":"MQTT",
+                        "url":"127.0.0.1",
+                        "port":1883,
+                        "address":"http://127.0.0.1:1883",
+                        "qos":2,
+                        "topics":{
+                            "publisher":{
+                                "topic_cat":"measurements",
+                                "topic_oxygen":"oxygen",
+                                "topic_pressure":"pressure",
+                                "topic_ecg":"ecg"
+                            }
+                        }
+                    }
+        }
+    },
+    "last_update":"2023-06-30 04:55:10"
+}
