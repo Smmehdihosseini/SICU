@@ -13,10 +13,9 @@ class DeviceCatalog:
 
     def __init__(self):
 
-        self.users = []
         self.devices = []
 
-        # Devices Catalog Base Path
+        # devices Catalog Base Path
         self.base_path = 'Catalog'
 
         # Loading Setting
@@ -26,13 +25,11 @@ class DeviceCatalog:
         self.conf = self.init_conf()
         self.dev_cat_conf = self.conf['device_catalog']
 
-        # Initilize Users, Devices and devices List
-        self.init_load_users()
-        self.init_load_devices()
+        # Initilize Devices
         self.init_load_devices()
 
-        self.url = self.dev_cat_conf['device_catalog']['url']
-        self.port = self.dev_cat_conf['device_catalog']['port']
+        self.url = self.dev_cat_conf['url']
+        self.port = self.dev_cat_conf['port']
 
     def cat_url(self):
         return self.url
@@ -51,7 +48,6 @@ class DeviceCatalog:
 
                 # MongoDB Device Settings
                 self.path_conf = self.settings['device_settings']['path_conf']
-                self.path_users = self.settings['device_settings']['path_users']
                 self.path_devices = self.settings['device_settings']['path_devices']
                 self.time_format = self.settings['device_settings']['time_format']
 
@@ -113,107 +109,42 @@ class DeviceCatalog:
             with open(self.base_path+'/'+self.path_devices, 'w') as file:
                 json.dump(self.devices, file, indent=4)
 
-    # Create/Open devices List
-    def init_load_devices(self):
-        if os.path.exists(self.base_path+'/'+self.path_devices):
-            with open(self.base_path+'/'+self.path_devices, 'r') as file:
-                self.devices = json.load(file)
-        else:
-            self.devices = []
-            with open(self.base_path+'/'+self.path_devices, 'w') as file:
-                json.dump(self.devices, file, indent=4)
-    
-    # Update Users List
-    def update_users_list(self):
-        with open(self.base_path+'/'+self.path_users, 'w') as file:
-            json.dump(self.users, file, indent=4)
-
     # Update Devices List
     def update_devices_list(self):
         with open(self.base_path+'/'+self.path_devices, 'w') as file:
             json.dump(self.devices, file, indent=4)
-    
-    # Get User Devices
-    def get_user_devices(self, username):
-        user_devs =  next((user for user in self.users if user["username"]==username), None)['devices']
-        return {"devices": user_devs}
-    
-    # User Authentication
-    def auth_user(self, username, password):
-        user_obj = next((user for user in self.users if user["username"]==username and user["password"]==password), None)
-        if user_obj:
-            return {'authenticated': True,
-                       'devices':user_obj['devices']}
-        else:
-            return {'authenticated': False}
-        
-    # User Registeration	
-    def reg_user(self, organization, password):
-        
-        user_obj = True
-        while user_obj:
-            username = UserGen(organization)
-            user_obj = next((user for user in self.users if user["username"]==username), None)
-
-        new_user_obj =  {
-                            "username": username,
-                            "password": password,
-                            "organization": organization,
-                            "devices": []
-                        }
-        self.users.append(new_user_obj)
-        self.update_users_list()
-        return {'registered': True, 'username':username}
-        
-    # Add Device By User
-    def add_dev(self, dev_id, dev_password, username):
-        dev_obj = next(((index, dev) for index, dev in enumerate(self.devices) if dev["dev_id"]==dev_id and dev["dev_password"]==dev_password), None)
-        if dev_obj:
-            dev_ind, dev_info = dev_obj
-            if dev_info['reg_user']!=" ":
-                if dev_info['reg_user']==username:
-                    return {'status': "Device Duplicate"}
-                else:
-                    return {'status': "Device Registered Previously"}
-            else:
-                user_ind, _ = next(((index, user) for index, user in enumerate(self.users) if user["username"]==username), None)
-                self.users[user_ind]['devices'].append(dev_id)
-                self.devices[dev_ind]['reg_user'] = username
-                self.update_users_list()
-                self.update_devices_list()
-                return {'status': "Device Registered"}
-        else:
-            return {'status': "Device Not Found"}
         
     def reg_device(self, params):
-        serv_obj = next(((index, serv) for index, serv in enumerate(self.devices) if serv["id"]==params['id']), None)
+        self.init_load_devices()
+        dev_obj = next(((index, dev) for index, dev in enumerate(self.devices) if dev["dev_id"]==params['dev_id']), None)
 
-        if serv_obj:
-            serv_ind, serv_info = serv_obj
-            if serv_info['name']==params['name']:
-                self.devices[serv_ind] = params
-                self.devices[serv_ind]['last_update'] = datetime.now().strftime(self.time_format)
-                self.update_devices_list()
-                print(f"{Fore.LIGHTYELLOW_EX}+ [SRV=UPDATE][{self.devices[serv_ind]['last_update']}] Device ID: {self.devices[serv_ind]['id']} Updated{Fore.RESET}")
-                return {'status': 'Updated'}
-            else:
-                return {'status': "Failed", 'log':'Device ID Not Available'}
+        if dev_obj:
+            dev_ind, dev_info = dev_obj
+            temp_reg_user = self.devices[dev_ind]['reg_user']
+            self.devices[dev_ind] = params
+            self.devices[dev_ind]['reg_user'] = temp_reg_user
+            self.devices[dev_ind]['last_update'] = datetime.now().strftime(self.time_format)
+            self.update_devices_list()
+            print(f"{Fore.LIGHTYELLOW_EX}+ [DEV=UPDATE][{self.devices[dev_ind]['last_update']}] Device ID: {self.devices[dev_ind]['dev_id']} Updated{Fore.RESET}")
+            return {'status': 'Updated'}
+
         else:
             address_dup = False
             address_dup_list = []
             for param_endpoint in params['endpoints']:
                 for Device in self.devices:
                     for endpoint in Device['endpoints']:
-                        if param_endpoint['address']==endpoint['address']:
+                        if params['endpoints'][param_endpoint]['address']==Device['endpoints'][endpoint]['address']:
                             address_dup = True
-                            address_dup_list.append(param_endpoint['address'])
+                            address_dup_list.append(params['endpoints'][param_endpoint]['address'])
 
             if address_dup==False:
                 new_device = params.copy()
+                new_device['reg_user'] = []
                 new_device['last_update'] = datetime.now().strftime(self.time_format)
                 self.devices.append(new_device)
                 self.update_devices_list()
-                print(f"{Fore.GREEN}+ [{new_device['last_update']}][SRV=ONLINE] Device ID: {new_device['id']} Registered{Fore.RESET}")
+                print(f"{Fore.GREEN}+ [{new_device['last_update']}][DEV=ONLINE] Device ID: {new_device['dev_id']} Registered{Fore.RESET}")
                 return {'status': "Registered"}
             else:
                 return {'status': "Failed", 'log':f'Address(s) [{", ".join(address_dup_list)}] Already Exists'}
@@ -221,23 +152,21 @@ class DeviceCatalog:
     def check_devices(self):
         offline_devices = []
         online_devices = []
+        time_now = datetime.now().strftime(self.time_format)
         for index, item in enumerate(self.devices):
-            time_now = datetime.now().strftime(self.time_format)
             if TimeDiff(item['last_update'], time_now)>self.update_thresh:
-                offline_devices.append(item['id'])
-                removed_item = self.devices.pop(index)
+                offline_devices.append(item['dev_id'])
             else:
-                online_devices.append(item['id'])
+                online_devices.append(item['dev_id'])
                 
-        self.update_devices_list()
-        print(f"{Fore.CYAN}+ [{time_now}] devices Status:{Fore.RESET}")
-        print(f"{Fore.CYAN}- ONLINE devices:{', '.join(online_devices)}{Fore.RESET}")
-        print(f"{Fore.CYAN}- OFFLINE devices:{', '.join(offline_devices)} Registered{Fore.RESET}")
+        print(f"{Fore.CYAN}+ [{time_now}] Devices Status:{Fore.RESET}")
+        print(f"{Fore.CYAN}- No. ONLINE Devices: [{len(online_devices)}]{Fore.RESET}")
+        print(f"{Fore.CYAN}- No. OFFLINE Devices: [{len(offline_devices)}]{Fore.RESET}")
 
         time.sleep(self.update_thresh)
 
 
-class deviceCatalogWebdevice:
+class DeviceCatalogWebService:
 
     exposed = True
 
@@ -261,62 +190,31 @@ class deviceCatalogWebdevice:
                         'tools.sessions.on': True
                     }
                 }
-
-    def GET(self, *uri, **params):
-        if len(uri)>0:
-
-            # Fetch User Devices List | Telegram Bot
-            if str(uri[0])=="get_user_devices":
-                try:
-                    if "username" in params:
-                        return json.dumps({"devices": self.dev_cat.get_user_devices(params["username"])})
-                    else:
-                        raise cherrypy.HTTPError(404, "User Not Found")
-                except:
-                    raise cherrypy.HTTPError(400, "Invalid Parameters")
-                
-            # Authenticate Users | Telegram Bot	& Web Application
-            if str(uri[0])=="auth_user":
-                if "username" and "password" in params:
-                    return json.dumps(self.dev_cat.auth_user(params["username"],
-                                                                  params["password"]))
-                else:
-                    raise cherrypy.HTTPError(400, "Invalid Parameters")
                 
     @cherrypy.tools.json_in()			
     @cherrypy.tools.json_out()			
     def POST(self, *uri, **params):
-        if len(uri)>0:   
-            if str(uri[0])=="reg_user":
+        if len(uri)>0:             
+            if str(uri[0])=="reg_device":
                 request_body = json.loads(cherrypy.request.json)
-                if "organization" and "password" in request_body.keys():
-                    return self.dev_cat.reg_user(request_body["organization"],
-                                                              request_body["password"])
-                else:
-                    raise cherrypy.HTTPError(400, "Invalid Parameters")
-                    
-            elif str(uri[0])=="add_device":
-                request_body = json.loads(cherrypy.request.json)
-                if "dev_id" and "dev_password" and "username" in request_body.keys():
-                    return self.dev_cat.add_dev(request_body["dev_id"],
-                                                             request_body["dev_password"],
-                                                             request_body["username"])
-                else:
-                    raise cherrypy.HTTPError(400, "Invalid Parameters")
-                
-            elif str(uri[0])=="reg_device":
-                request_body = json.loads(cherrypy.request.json)
-                if 'id' and 'name' and 'endpoints' in request_body.keys():
+                if 'dev_id' and 'name' and 'endpoints' in request_body.keys():
                     return self.dev_cat.reg_device(request_body)
                 
 if __name__ == '__main__':
 
-    device_cat_webdevice = deviceCatalogWebdevice()
+    device_cat_webdevice = DeviceCatalogWebService()
     cherrypy.tree.mount(device_cat_webdevice, '/', device_cat_webdevice.webdevice_conf())
     cherrypy.config.update({'server.socket_host': device_cat_webdevice.webdevice_url()})
     cherrypy.config.update({'server.socket_port': device_cat_webdevice.webdevice_port()})
-
-    function_thread = threading.Thread(target=device_cat_webdevice.devices_status())
-    function_thread.daemon = True
     cherrypy.engine.start()
+    device_cat_webdevice_thread = threading.Thread(target=device_cat_webdevice.devices_status)
+    device_cat_webdevice_thread.daemon = True
+    device_cat_webdevice_thread.start()
     cherrypy.engine.block()
+
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        cherrypy.engine.stop()
+        device_cat_webdevice_thread.terminate()

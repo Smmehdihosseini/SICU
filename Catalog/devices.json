@@ -1,30 +1,28 @@
 [
     {
-        "dev_id": "P300",
+        "dev_id": "P-ABC342",
         "dev_password": "PYTRU7865%$",
-        "manufacture_date": "2023-6-1 10:30:29",
-        "type": "Sensor",
-        "reg_user": "UPDT89621"
-    },
-    {
-        "dev_id": "P-TRC476",
-        "dev_password": "PETCS9734#$",
-        "manufacture_date": "2023-6-3 11:30:29",
-        "type": "Sensor",
-        "reg_user": "UPDT89621"
-    },
-    {
-        "dev_id": "P-YRD765",
-        "dev_password": "ExamplePass",
-        "manufacture_date": "2023-6-3 11:30:29",
-        "type": "Sensor",
-        "reg_user": "UPDT89621"
-    },
-    {
-        "dev_id": "P-YTES5",
-        "dev_password": "PETCS9734#$",
-        "manufacture_date": "2023-6-3 11:30:29",
-        "type": "Sensor",
-        "reg_user": "UPDT89621"
+        "dev_manufacture_date": "2023-06-01 10:30:29",
+        "dev_type": "Gateway",
+        "endpoints": {},
+        "connections": {
+            "MQTT": {
+                "name": "MQTT",
+                "url": "127.0.0.1",
+                "port": 1883,
+                "address": "http://127.0.0.1:1883",
+                "qos": 2,
+                "topics": {
+                    "publisher": {
+                        "topic_cat": "measurements",
+                        "topic_oxygen": "oxygen",
+                        "topic_pressure": "pressure",
+                        "topic_ecg": "ecg"
+                    }
+                }
+            }
+        },
+        "reg_user": [],
+        "last_update": "2023-07-03 13:06:34"
     }
 ]

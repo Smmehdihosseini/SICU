@@ -1,0 +1,10 @@
+{
+    "device_catalog": {
+        "url":"127.0.0.1",
+        "port":8081,
+        "address":"http://127.0.0.1:8081",
+        "methods": [
+            "POST"
+        ]
+    }
+}

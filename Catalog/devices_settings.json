@@ -1,0 +1,12 @@
+{
+    "device_settings": {
+                    "path_conf":"devices_conf.json",
+                    "path_devices":"devices.json",
+                    "time_format":"%Y-%m-%d %H:%M:%S"
+                    },
+    "timesout_settings": {
+                        "conf_timeout":2,
+                        "conf_maxretry":10,
+                        "update_threshold":20
+                    }                
+}
