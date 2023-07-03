@@ -140,7 +140,7 @@ class DeviceCatalog:
 
             if address_dup==False:
                 new_device = params.copy()
-                new_device['reg_user'] = []
+                new_device['reg_user'] = " "
                 new_device['last_update'] = datetime.now().strftime(self.time_format)
                 self.devices.append(new_device)
                 self.update_devices_list()
