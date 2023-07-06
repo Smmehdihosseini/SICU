@@ -2,12 +2,11 @@ import os
 import json
 import time
 from datetime import datetime
-import cherrypy
-from utils.ErrorHandler import SettError, ConfError
-from utils.funcs import UserGen, TimeDiff
-from colorama import Fore, Style
 import threading
-
+import cherrypy
+from colorama import Fore
+from utils.ErrorHandler import SettError, ConfError
+from utils.funcs import TimeDiff
 
 class DeviceCatalog:
 

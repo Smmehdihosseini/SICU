@@ -1,0 +1,2 @@
+colorama==0.4.6
+cherrypy==18.8.0
