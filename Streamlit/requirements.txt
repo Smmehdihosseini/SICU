@@ -1,0 +1,7 @@
+colorama==0.4.6
+requests==2.31.0
+streamlit==1.23.1
+streamlit_extras==0.2.7
+pandas==2.0.2
+toml==0.10.2
+pillow==9.5.0

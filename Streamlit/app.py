@@ -1,15 +1,16 @@
-import streamlit as st
-from streamlit_extras.add_vertical_space import add_vertical_space as VERTICAL_SPACE
-import pandas as pd
-import time
-import toml
-from PIL import Image, ImageFilter
-import requests
-import json
-from colorama import Fore, Style
-from utils.ErrorHandler import ConfError, SettError, CatError
+
 import os
+import time
+import json
+import toml
 import threading
+import requests
+import pandas as pd
+import streamlit as st
+from colorama import Fore
+from PIL import Image, ImageFilter
+from streamlit_extras.add_vertical_space import add_vertical_space as VERTICAL_SPACE
+from utils.ErrorHandler import ConfError, SettError, CatError
 
 class SICU_WEB:	
 
