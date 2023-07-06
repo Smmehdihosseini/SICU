@@ -1,0 +1,5 @@
+paho-mqtt==1.6.1
+numpy==1.24.3
+neurokit2==0.2.4
+colorama==0.4.6
+requests==2.31.0

@@ -1,12 +1,12 @@
-import paho.mqtt.client as PahoMQTT
+import os
 import time
-import numpy as np
 import json
+import threading
+import requests
+import paho.mqtt.client as PahoMQTT
+import numpy as np
 from colorama import Fore, Style
 from utils.ErrorHandler import BrokerError, SettError, ConfError, CatError
-import os
-import requests
-import threading
 
 class OxygenAnalysis:
         

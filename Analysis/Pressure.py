@@ -1,12 +1,12 @@
-import paho.mqtt.client as PahoMQTT
-import time
-import numpy as np
+import os
 import json
+import time
+import threading
+import requests
+import numpy as np
+import paho.mqtt.client as PahoMQTT
 from colorama import Fore, Style
 from utils.ErrorHandler import BrokerError, SettError, ConfError, CatError
-import os
-import requests
-import threading
 
 class BloodPressureAnalysis:
         
