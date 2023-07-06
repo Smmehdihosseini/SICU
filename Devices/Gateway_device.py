@@ -1,13 +1,13 @@
-import paho.mqtt.client as PahoMQTT
+import os
 import time
 import random
 import json
-import neurokit2 as nk
-from colorama import Fore, Style
-from utils.ErrorHandler import BrokerError, SettError, ConfError, CatError
-import os
 import requests
 import threading
+import neurokit2 as nk
+import paho.mqtt.client as PahoMQTT
+from colorama import Fore, Style
+from utils.ErrorHandler import BrokerError, SettError, ConfError, CatError
 
 class GatewayDevice:
 
