@@ -1,14 +1,13 @@
-import paho.mqtt.client as PahoMQTT
+import os
 import time
-import numpy as np
 import json
+import threading
+import requests
 import cherrypy
 from colorama import Fore, Style
+import paho.mqtt.client as PahoMQTT
 from pymongo import MongoClient, DESCENDING
 from utils.ErrorHandler import DatabaseError, BrokerError, ConfError, SettError, CatError
-import requests
-import os
-import threading
 
 class MongoDB:	
         
