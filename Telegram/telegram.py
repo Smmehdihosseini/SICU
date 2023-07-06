@@ -1,17 +1,14 @@
-import telepot
-import paho.mqtt.client as PahoMQTT
-from telepot.loop import MessageLoop
-from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton
-from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
-from colorama import Fore, Style
-from utils.ErrorHandler import BrokerError, MessageLoopError, CatError, SettError, ConfError
-import datetime
-import requests
-import random
+import os
 import json
 import time
-import os
+import datetime
 import threading
+import requests
+import telepot
+from colorama import Fore, Style
+import paho.mqtt.client as PahoMQTT
+from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
+from utils.ErrorHandler import BrokerError, MessageLoopError, CatError, SettError, ConfError
 
 class TelegramBot:
 

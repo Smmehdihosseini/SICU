@@ -1,0 +1,4 @@
+paho-mqtt==1.6.1
+colorama==0.4.6
+requests==2.31.0
+telepot==12.7
