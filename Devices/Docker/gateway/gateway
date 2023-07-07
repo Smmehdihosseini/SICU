@@ -1,0 +1,5 @@
+FROM python:3.9.16
+WORKDIR /SICU
+COPY Devices /SICU/Devices
+RUN pip install --no-cache-dir -r /SICU/Devices/requirements.txt
+CMD ["python", "-m", "Devices.Gateway_device"]

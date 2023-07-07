@@ -1,0 +1,5 @@
+FROM python:3.9.16
+WORKDIR /SICU
+COPY Telegram /SICU/Telegram
+RUN pip install --no-cache-dir -r /SICU/Telegram/requirements.txt
+CMD ["python", "-m", "Telegram.telegram"]

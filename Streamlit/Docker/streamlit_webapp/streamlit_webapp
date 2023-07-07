@@ -1,0 +1,5 @@
+FROM python:3.9.16
+WORKDIR /SICU
+COPY Streamlit /SICU/Streamlit
+RUN pip install --no-cache-dir -r /SICU/Streamlit/requirements.txt
+CMD ["streamlit", "run", "app.py"]

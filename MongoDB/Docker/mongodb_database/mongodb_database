@@ -1,0 +1,5 @@
+FROM python:3.9.16
+WORKDIR /SICU
+COPY MongoDB /SICU/MongoDB
+RUN pip install --no-cache-dir -r /SICU/MongoDB/requirements.txt
+CMD ["python", "-m", "MongoDB.MongoDB"]

@@ -1,0 +1,5 @@
+FROM python:3.9.16
+WORKDIR /SICU
+COPY Analysis /SICU/Analysis
+RUN pip install --no-cache-dir -r /SICU/Analysis/requirements.txt
+CMD ["python", "-m", "Analysis.Oxygen"]
