@@ -210,7 +210,7 @@ class GatewayDevice:
                 systolic = random.randint(self.systolic_threshold, 140)
             else:
                 if random.random()>=0.5:
-                    systolic = random.randint(50, self.systolic_threshold-1)
+                    systolic = random.randint(80, self.systolic_threshold-1)
 
                 else:
                     systolic = random.randint(141, 150)
