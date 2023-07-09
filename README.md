@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/your-channel-or-video-link">
+  <a href="https://www.youtube.com/watch?v=cejQx8TECGc&t=9s">
     <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube" width="200"/>
   </a>
 </p>
@@ -18,8 +18,6 @@
 ## Table of Contents
 - [Description](#description)
 - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
 - [Usage](#usage)
 - [License](#license)
 - [Contact](#contact)
@@ -93,18 +91,16 @@ After setting up the virtual environment and installing the required packages, y
 You can also check out demo walkthrough video on [Youtube](https://www.youtube.com/watch?v=D4x3aPz1dGk)!
 
 1. Change directory to the main directory of repository.
-2. Before executing any files remember to check the `conf` and `settings` files in each directory and change them according to your needs in that service. 
+2. Before executing any files remember to check the `conf` and `settings` files in each directory and change them according to your needs in that service.
 3. Stay in this directory and run the microservices using this command in your terminal or command line:
-    -
     ```
     python -m <EXAMPLEFOLDER>.<EXAMPLESERVICE>
     ```
-4. For example, in order to run the Service Catalog, you should use:
-    -
+5. For example, in order to run the Service Catalog, you should use:
     ```
     python -m Catalog.service_catalog
     ```
-5. The only microservice that needs to be executed in the subdirectory is the Streamlit Web Application. In order to do that you have to change directory to Streamlit folder and run:
+8. The only microservice that needs to be executed in the subdirectory is the Streamlit Web Application. In order to do that you have to change directory to Streamlit folder and run:
     ```
     streamlit run app.py
     ```
